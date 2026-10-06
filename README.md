@@ -27,6 +27,8 @@ Angepasste Fassung der App „PM Panel Studio“ aus
 | Laufende Geräte | Waschmaschine (Miele), Trockner (Steckdose ab 8 W), Saugroboter S8 MaxV Ultra, Musik |
 | Automatische Hinweise | offene Türen/Fenster (Bosch SHC), Rauch- und Wasseralarm, Batterien unter 15 %, Solarbank unter 15 %, Waschmaschine fertig, Updates |
 | Schnellzugriff | Alarmanlage, Saugroboter, Wohnzimmer OG, Küchen-LED, Anwesenheitssimulation, Alle Lichter aus |
+| Sicherheit | Rauchmelder-Übersicht je Etage mit Batterie und Testalarm |
+| Wartung | Signalstärke der Geräte (WLAN, dBm, Bosch, Zigbee), schwächste zuerst |
 | Ausgeblendet | Status-LEDs der Meross-Steckdosen, Einstellungsschalter (Kindersicherung, Voralarm, Sirene bei Ereignis …), Ventile, leere Bereiche |
 | Entfernt | Shisha-Seite, Kohlegrill, Dusch-/Spa-Timer, Spülmaschine des Originals |
 

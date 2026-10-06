@@ -129,6 +129,7 @@
     const haupt = PS.opt.alarm_entitaet;
     alarm.sort((x, y) => (y === haupt) - (x === haupt)).slice(0, 2).forEach((a) => l.appendChild(PS.alarmSteuerung(a)));
     const zugang = [...alle().filter(dom("lock")), ...(PS.opt.tueroeffner && PS.z[PS.opt.tueroeffner] ? [PS.opt.tueroeffner] : [])].filter(PS.sichtbar);
+    const rauch = rauchmelderBox(); if (rauch) l.appendChild(rauch);
     if (zugang.length) { const b = box("Zugang"); b.appendChild(raster(zugang)); l.appendChild(b); }
     const bs = (k) => alle().filter((e) => e.startsWith("binary_sensor.") && PS.sichtbar(e) && !PS.nichtDa(e) && k.includes(PS.a(e).device_class));
     const kontakte = bs(["door", "window", "opening", "garage_door"]).sort((x, y) => (PS.s(y) === "on") - (PS.s(x) === "on") || nameSort(x, y));
@@ -157,6 +158,98 @@
       liste.innerHTML = ev.map((x) => `<div class="zeile">${PS.z[x.entity_id] ? PS.icon(x.entity_id) : PS.ic("history")}<span class="n">${PS.esc(x.name || x.entity_id)}<small>${PS.esc(x.message || PS.text(x.entity_id, x.state))}</small></span><span class="w">${PS.uhrzeit(new Date(x.when))}</span></div>`).join("") || '<div class="leer">Keine Ereignisse in den letzten 12 Stunden.</div>';
     }).catch(() => { liste.innerHTML = '<div class="leer">Protokoll nicht verfügbar.</div>'; });
     r.appendChild(alleKnopf("Alle Melder und Kameras", "sicherheit"));
+  }
+
+  // ------------------------------------------------------------ Rauchmelder (Sicherheit)
+  // Je Melder: Zustand, Batterie (Batterie-Melder oder Prozentsensor desselben Geräts) und Testalarm-Knopf des Geräts
+  const geraetVon = (e) => (PS.reg[e] || {}).d;
+  const geschwister = (e) => { const d = geraetVon(e); return d ? Object.keys(PS.reg).filter((x) => x !== e && PS.reg[x].d === d && PS.z[x]) : []; };
+  const etageVon = (e) => { const b = PS.bereiche.find((x) => x.id === PS.bereichVon(e)); return b ? { name: b.etage || "Ohne Etage", level: b.etage_level ?? -99, raum: b.name } : { name: "Ohne Etage", level: -99, raum: "" }; };
+  function rauchmelderDaten() {
+    return alle().filter((e) => e.startsWith("binary_sensor.") && PS.a(e).device_class === "smoke" && !/smokedetectionsystem/.test(e)).map((e) => {
+      const g = geschwister(e);
+      const battBin = g.find((x) => x.startsWith("binary_sensor.") && PS.a(x).device_class === "battery");
+      const battPct = g.find((x) => x.startsWith("sensor.") && PS.a(x).device_class === "battery" && isFinite(num(x)));
+      const test = g.find((x) => x.startsWith("button.") && /test/.test(x));
+      const weg = PS.nichtDa(e), alarm = PS.s(e) === "on";
+      const schwach = (battBin && PS.s(battBin) === "on") || (battPct && num(battPct) < 20);
+      const et = etageVon(e);
+      return { e, test, alarm, weg, schwach, et, name: PS.name(e).replace(/^(RM|Twinguard)\s+/i, "").replace(/\s*Rauch$/i, "").trim() || et.raum,
+        batt: battPct ? `${PS.zahl(num(battPct), 0)} %` : battBin ? (PS.s(battBin) === "on" ? "schwach" : PS.s(battBin) === "off" ? "ok" : "–") : "–" };
+    }).sort((x, y) => (y.alarm - x.alarm) || (y.weg - x.weg) || (y.schwach - x.schwach) || (y.et.level - x.et.level) || x.name.localeCompare(y.name, "de"));
+  }
+  function rauchmelderZeile(d, mitTest) {
+    const st = d.alarm ? ["Rauch!", "var(--krit)", "smoke-detector-variant-alert"] : d.weg ? ["nicht erreichbar", "var(--warn)", "smoke-detector-variant-off"] : d.schwach ? ["Batterie schwach", "var(--warn)", "battery-alert-variant-outline"] : ["OK", "var(--gut)", "smoke-detector-variant"];
+    const z = E(`<div class="zeile" data-eid="${PS.esc(d.e)}"><span style="color:${st[1]}">${PS.ic(st[2])}</span><span class="n">${PS.esc(d.name)}<small>${PS.esc(d.et.raum || d.et.name)} · Batterie ${PS.esc(d.batt)}</small></span><span class="w" style="color:${st[1]}">${PS.esc(st[0])}</span></div>`);
+    z.addEventListener("click", (ev) => { if (!ev.target.closest(".knopf")) PS.mehrInfos(d.e); });
+    if (mitTest && d.test && !d.weg) {
+      const t = knopf("", "bell-ring-outline", null, "rund");
+      t.setAttribute("aria-label", "Testalarm (2 s halten)");
+      PS.halten(t, 2000, () => PS.dienst("button", "press", { entity_id: d.test }).then(() => PS.toast(`Testalarm: ${d.name}`)));
+      z.appendChild(t);
+    }
+    return z;
+  }
+  function rauchmelderBox() {
+    const daten = rauchmelderDaten();
+    if (!daten.length) return null;
+    const alarm = daten.filter((d) => d.alarm).length, problem = daten.filter((d) => d.weg || d.schwach).length;
+    const b = box("Rauchmelder", `${daten.length} Melder`);
+    const kopf = E('<div class="r-zustand"></div>');
+    kopf.append(ring((daten.length - alarm - problem) / daten.length, alarm ? "var(--krit)" : problem ? "var(--warn)" : "var(--gut)", String(daten.length - alarm - problem), `von ${daten.length}`),
+      E(`<div><div class="r-zahl klein">${alarm ? `${alarm} × Rauch erkannt` : problem ? `${problem} ${problem === 1 ? "Melder braucht" : "Melder brauchen"} Aufmerksamkeit` : "Alles ruhig"}</div><div class="r-unter">${alarm || problem ? "" : "Alle Melder bereit, Batterien in Ordnung."}</div></div>`));
+    b.appendChild(kopf);
+    const liste = E('<div class="liste"></div>');
+    daten.filter((d) => d.alarm || d.weg || d.schwach).slice(0, 4).forEach((d) => liste.appendChild(rauchmelderZeile(d, false)));
+    if (liste.children.length) b.appendChild(liste);
+    b.appendChild(knopf("Alle Rauchmelder", "smoke-detector-variant", () => PS.unterseite("Rauchmelder", rauchmelderSeite), "r-alles"));
+    return b;
+  }
+  function rauchmelderSeite(el) {
+    const daten = rauchmelderDaten();
+    el.classList.add("raumseite");
+    const g = E('<div class="raum-ansicht rauchmelder"></div>');
+    const etagen = [...new Map(daten.map((d) => [d.et.name, d.et.level])).entries()].sort((x, y) => y[1] - x[1]);
+    etagen.forEach(([name]) => {
+      const b = box(name, `${daten.filter((d) => d.et.name === name).length} Melder`);
+      const liste = E('<div class="liste"></div>');
+      daten.filter((d) => d.et.name === name).forEach((d) => liste.appendChild(rauchmelderZeile(d, true)));
+      b.appendChild(liste); g.appendChild(b);
+    });
+    g.appendChild(E('<div class="r-unter">Testalarm: Glocke 2 Sekunden halten. Der Melder piept dabei laut.</div>'));
+    el.appendChild(g);
+  }
+
+  // ------------------------------------------------------------ Signalstärke (Wartung)
+  // Meross (%), Shelly & Co. (dBm), Bosch (Kommunikationsqualität), Zigbee (Linkqualität 0–255)
+  const QUALI = { good: 1, normal: 0.6, bad: 0.15 };
+  function signalDaten() {
+    return alle().filter((e) => e.startsWith("sensor.") && !PS.nichtDa(e)).map((e) => {
+      const a = PS.a(e), v = num(e), id = e.toLowerCase();
+      let anteil = null, text = PS.text(e);
+      if (a.device_class === "signal_strength" && /dbm/i.test(a.unit_of_measurement || "") && isFinite(v)) { anteil = Math.max(0, Math.min(1, (v + 100) / 60)); text = `${PS.zahl(v, 0)} dBm`; }
+      else if (/signal_strength|wifi_signal|_signal$/.test(id) && a.unit_of_measurement === "%" && isFinite(v)) { anteil = v / 100; text = `${PS.zahl(v, 0)} %`; }
+      else if (/communication_quality/.test(id) && PS.s(e) in QUALI) { anteil = QUALI[PS.s(e)]; text = { good: "gut", normal: "mittel", bad: "schlecht" }[PS.s(e)]; }
+      else if (/linkquality|link_quality/.test(id) && isFinite(v)) { anteil = v / 255; text = `${PS.zahl(v, 0)} LQI`; }
+      if (anteil == null) return null;
+      const d = geraetVon(e);
+      const name = (d && PS.geraete && PS.geraete[d]) || PS.name(e).replace(/\s*(Signal Strength|RSSI|Communication Quality|Signalstärke)$/i, "");
+      return { e, anteil, text, name };
+    }).filter(Boolean).sort((x, y) => x.anteil - y.anteil);
+  }
+  const signalFarbe = (a) => a < 0.3 ? "var(--krit)" : a < 0.5 ? "var(--warn)" : "var(--gut)";
+  function signalBox() {
+    const daten = signalDaten();
+    if (!daten.length) return null;
+    const schwach = daten.filter((d) => d.anteil < 0.3).length;
+    const b = box("Signalstärke", schwach ? `${schwach} schwach` : "schwächste zuerst");
+    daten.slice(0, 6).forEach((d) => b.appendChild(balken(d.name, d.text, d.anteil, signalFarbe(d.anteil), d.e)));
+    if (daten.length > 6) b.appendChild(knopf(`Alle ${daten.length} Geräte`, "wifi-strength-4", () => PS.unterseite("Signalstärke", (el) => {
+      const g = box("Signalstärke", `${daten.length} Geräte`);
+      signalDaten().forEach((d) => g.appendChild(balken(d.name, d.text, d.anteil, signalFarbe(d.anteil), d.e)));
+      el.appendChild(g);
+    }), "r-alles"));
+    return b;
   }
 
   // Aufnahmen der Reolink-Kamera (Medienquelle): heute und gestern, antippen spielt sie ab
@@ -369,6 +462,7 @@
     const b4 = box("Verbrauchsmaterial", PS.einst.material_modus === "manuell" ? "feste Auswahl" : "automatisch");
     mat.slice(0, 7).forEach(({ e, rest, text, name }) => b4.appendChild(balken(name, text, rest == null ? 1 : rest, rest == null ? null : rest < 0.1 ? "var(--krit)" : rest < 0.25 ? "var(--warn)" : "var(--gut)", e)));
     if (mat.length) r.appendChild(b4);
+    const sig = signalBox(); if (sig) r.appendChild(sig);
     r.appendChild(alleKnopf("Protokoll, Batterien und Automationen", "wartung"));
   }
 

@@ -137,7 +137,7 @@ class Einstellungen:
     module_bekannt: list[str] = field(default_factory=lambda: list(MODULE))  # neue Module erscheinen einmalig im Dock
     bereiche_reihenfolge: list[str] = field(default_factory=list)
     bereiche_ausblenden: list[str] = field(default_factory=lambda: list(STANDARD_AUSBLENDEN))
-    start_raeume: list[str] = field(default_factory=lambda: ["wohnzimmer_og", "arbeitszimmer", "oma_zimmer_ug"])
+    start_raeume: list[str] = field(default_factory=lambda: ["wohnzimmer_og", "arbeitszimmer_dachgeschoss", "oma_zimmer_ug"])
     karten_aus: list[str] = field(default_factory=list)  # Kartenschlüssel, die der Flur nicht zeigt
     szenen_angeheftet: list[str] = field(default_factory=list)  # stehen in der Raumansicht immer vorn
     szenen_aus: list[str] = field(default_factory=list)  # erscheinen nicht unter den Lieblingsszenen

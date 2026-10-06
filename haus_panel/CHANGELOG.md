@@ -1,5 +1,14 @@
 # Änderungen
 
+## 1.1.0 – 2026-10-06
+
+- Sicherheit: neue Box „Rauchmelder“ mit Gesamtzustand (Ring), auffälligen Meldern (Rauch, nicht erreichbar,
+  Batterie schwach) und der Unterseite „Alle Rauchmelder“: je Etage alle Melder mit Raum, Batteriezustand und
+  Testalarm (Glocke 2 Sekunden halten).
+- Wartung: neue Box „Signalstärke“, schwächste Geräte zuerst: WLAN in Prozent (Meross), dBm (Shelly u. a.),
+  Kommunikationsqualität (Bosch) und Zigbee-Linkqualität; „Alle Geräte“ öffnet die vollständige Liste.
+- Startseite: Arbeitszimmer DG statt des aufgelösten Bereichs „Arbeitszimmer“.
+
 ## 1.0.0 – 2026-10-06
 
 Erste Fassung für Haus Eichner, abgeleitet von PM Panel Studio 0.1.14 (D0GC/pm-networks-ultimate-dashboard).
