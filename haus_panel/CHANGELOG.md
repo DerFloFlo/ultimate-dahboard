@@ -1,5 +1,13 @@
 # Änderungen
 
+## 1.2.0 – 2026-10-06
+
+- Die Seitenleiste „Haus Panel“ öffnet jetzt direkt das Panel. Es läuft damit auch unterwegs in der
+  Home-Assistant-App (Nabu Casa), bleibt dort immer wach und dunkelt nicht ab. Die Einstellungen liegen hinter dem
+  Zahnrad unten links.
+- Handy-Ansicht: Startseite einspaltig ohne seitliches Überlaufen, Modulleiste wischbar, Module (Räume, Licht,
+  Sicherheit, Energie …) untereinander statt in drei Spalten.
+
 ## 1.1.2 – 2026-10-06
 
 - Panel-Adresse auf dem iPad: Der Editor zeigt jetzt anklickbare Adressen mit der lokalen Adresse von Home

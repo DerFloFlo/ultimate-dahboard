@@ -35,6 +35,8 @@ async def test_panel_braucht_zugangsschluessel(panel, token):
 
 async def test_editor_und_einstellungen(ingress, hub):
     r = await ingress.get("/")
+    assert r.status == 200 and "Haus Eichner" in await r.text() and "Panel einrichten" not in await r.text()
+    r = await ingress.get("/einstellungen")
     assert r.status == 200 and "Panel einrichten" in await r.text()
     d = await (await ingress.get("/api/einstellungen")).json()
     assert d["verbunden"] and d["port"] == 8098 and len(d["token"]) > 10

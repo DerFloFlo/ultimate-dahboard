@@ -1,6 +1,6 @@
 """Vorschau ohne Home Assistant: startet das Test-HA (tests/fake_ha.py) und Haus Eichner Panel lokal.
 
-python tools/dev_server.py            Ingress/Editor http://127.0.0.1:8099/, Panel http://127.0.0.1:8099/panel
+python tools/dev_server.py            Panel http://127.0.0.1:8099/, Einstellungen http://127.0.0.1:8099/einstellungen
 PMPS_SNAPSHOT=haus.json python tools/dev_server.py   Vorschau mit einem Abzug der echten Zustände (siehe FakeHA)
 """
 
@@ -46,7 +46,7 @@ async def main() -> None:
             await run.setup()
             await web.TCPSite(run, "127.0.0.1", port).start()
         hub.start()
-        print("Editor http://127.0.0.1:8099/  Panel http://127.0.0.1:8099/panel", flush=True)
+        print("Panel http://127.0.0.1:8099/  Einstellungen http://127.0.0.1:8099/einstellungen", flush=True)
         await asyncio.Event().wait()
 
 

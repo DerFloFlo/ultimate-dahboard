@@ -6,6 +6,17 @@
     modus: "wach", nacht: false, verbunden: false, ereignis: { aktiv: false },
   });
 
+  // In der Home-Assistant-Seitenleiste (Ingress) gibt es ein Zahnrad zu den Einstellungen
+  PS.ingress = location.pathname.includes("/api/hassio_ingress/");
+  if (PS.ingress) {
+    document.addEventListener("DOMContentLoaded", () => {
+      const a = document.createElement("a");
+      a.href = "einstellungen"; a.className = "zahnrad"; a.setAttribute("aria-label", "Einstellungen");
+      a.innerHTML = PS.ic("cog");
+      document.body.appendChild(a);
+    });
+  }
+
   // ------------------------------------------------------------ Ereignisse
   const hoerer = {};
   PS.on = (name, fn) => (hoerer[name] = hoerer[name] || []).push(fn);
@@ -73,7 +84,7 @@
     }
   }
   function modusSetzen(m) {
-    PS.modus = m.modus || "wach"; PS.nacht = !!m.nacht; PS.verbunden = !!m.verbunden;
+    PS.modus = PS.ingress ? "wach" : (m.modus || "wach"); PS.nacht = !PS.ingress && !!m.nacht; PS.verbunden = !!m.verbunden;
     document.body.classList.toggle("ruhe", PS.modus === "ruhe" && !document.body.classList.contains("offen"));
     document.body.classList.toggle("getrennt", !PS.verbunden);
     const e = PS.einst || {};

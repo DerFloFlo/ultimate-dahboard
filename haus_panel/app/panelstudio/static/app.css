@@ -469,3 +469,25 @@ body.ruhe .gruss.an{opacity:.6}
 .zaehler-knoepfe{justify-content:center;align-items:center;flex-wrap:nowrap;gap:.6rem}
 .zaehler-knoepfe .knopf.rund{width:3.2rem;height:3.2rem;flex:none}
 .zaehler-knoepfe .zuruecksetzen{margin-left:.6rem;opacity:.8}
+.zahnrad{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:45;width:2.6rem;height:2.6rem;border-radius:50%;display:grid;place-items:center;background:var(--flaeche-tief);border:1px solid var(--linie);color:var(--lavender);font-size:1.3rem;text-decoration:none;opacity:.7}
+.zahnrad:hover{opacity:1}
+
+/* Handy (z. B. iPhone über die Home-Assistant-App) */
+@media (max-width:600px){
+  :root{font-size:11px}
+  .start{grid-template-columns:minmax(0,1fr);overflow-x:hidden;padding-left:16px;padding-right:16px}
+  .start>*{min-width:0;max-width:100%}
+  .uhr{font-size:6rem}
+  .karussell{min-height:24rem}
+  .kacheln{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+  .dock{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .dock::-webkit-scrollbar{display:none}
+  .dock button{flex:0 0 auto;padding:.7rem .9rem}
+  .sheet{left:0;right:0;top:max(.6rem,env(safe-area-inset-top))}
+  .sheet-kopf{flex-wrap:wrap;padding:1rem 1.4rem .8rem}
+  .sheet-kopf .tabs{order:3;flex-basis:100%}
+  .sheet-inhalt{padding:1.2rem 1.2rem 2.4rem}
+  .sheet-inhalt.raumseite{overflow-y:auto;display:block}
+  .raum-ansicht,.raum-ansicht.breit-mitte{grid-template-columns:minmax(0,1fr)}
+  .r-spalte{overflow:visible}
+}

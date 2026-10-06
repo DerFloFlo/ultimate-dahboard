@@ -351,8 +351,10 @@ def create_ingress_app(hub: Hub, token: list[str], networks: list[Any] | None = 
     app[K_HUB] = hub
     app[K_TOKEN] = token
     app[K_ROLLE] = "ingress"
-    app.router.add_get("/", seite_editor)
+    # Seitenleiste (auch unterwegs über Nabu Casa): direkt das Panel; Einstellungen unter /einstellungen
+    app.router.add_get("/", seite_panel)
     app.router.add_get("/panel", seite_panel)
+    app.router.add_get("/einstellungen", seite_editor)
     app.router.add_get("/api/einstellungen", einstellungen_get)
     app.router.add_post("/api/einstellungen", einstellungen_post)
     app.router.add_post("/api/token", token_neu)

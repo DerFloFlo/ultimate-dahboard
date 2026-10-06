@@ -7,8 +7,8 @@ Karten und Zustände selbst und schickt dem Panel nur fertige Änderungen.
 
 | Zugang | Zweck |
 |--------|-------|
-| Seitenleiste „Haus Panel“ (Ingress) | Editor: Verhalten, Schnellzugriff, Module, Räume, Karten; Panel-Adresse; Vorschau |
-| `http://<Home-Assistant>:8098/?token=…` | Das Wandpanel selbst. Der Schlüssel steht im Editor. Nach dem ersten Aufruf merkt sich der Browser den Zugang (Cookie) |
+| Seitenleiste „Haus Panel“ (Ingress) | Das Panel für Handy und unterwegs (auch über Nabu Casa), ohne Abdunkeln. Zahnrad unten links → Einstellungen: Verhalten, Schnellzugriff, Module, Räume, Karten, Panel-Adressen |
+| `http://<Home-Assistant>:8098/?token=…` | Die Wandpanels im Heimnetz. Der Schlüssel steht in den Einstellungen; die Adresse funktioniert auch als Lesezeichen auf dem Home-Bildschirm |
 
 Der Zugangsschlüssel liegt in `/data/panel_token`. „Neuen Schlüssel erzeugen“ im Editor trennt alle Panels.
 

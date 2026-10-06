@@ -12,7 +12,7 @@ Angepasste Fassung der App „PM Panel Studio“ aus
 1. Home Assistant → Einstellungen → Apps → App-Store → ⋮ → Repositories → `https://github.com/DerFloFlo/ultimate-dahboard`
    hinzufügen.
 2. „Haus Eichner Panel“ installieren und starten. Die Optionen sind bereits auf das Haus eingestellt.
-3. In der Seitenleiste „Haus Panel“ öffnen, die Panel-Adresse (mit Zugangsschlüssel) kopieren und einmal auf jedem
+3. In der Seitenleiste „Haus Panel“ öffnen, über das Zahnrad die Einstellungen aufrufen, die Panel-Adresse (mit Zugangsschlüssel) kopieren und einmal auf jedem
    Tablet öffnen. Danach merkt sich der Browser den Zugang.
 
 ## Was an das Haus angepasst ist
@@ -43,7 +43,7 @@ Seitenleiste ändern.
 | `haus_panel/app/panelstudio/` | Python-Backend (aiohttp): HA-Anbindung, Hub, Karten-Engine, Server |
 | `haus_panel/app/panelstudio/static/` | Panel-Oberfläche und Editor (ohne Build-Schritt) |
 | `tests/` | Tests mit nachgebautem Home Assistant (`fake_ha.py`) |
-| `tools/dev_server.py` | Vorschau ohne Home Assistant: Editor `http://127.0.0.1:8099/`, Panel `…/panel` |
+| `tools/dev_server.py` | Vorschau ohne Home Assistant: Panel `http://127.0.0.1:8099/`, Einstellungen `…/einstellungen` |
 
 ## Entwicklung
 
