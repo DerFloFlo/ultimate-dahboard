@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.4.1 – 2026-10-06
+
+- UniFi: verständliche Meldung, wenn ein Ubiquiti-Cloud-Konto mit Zwei-Faktor statt eines lokalen Benutzers
+  eingetragen ist (HTTP 499).
+
 ## 1.4.0 – 2026-10-06
 
 - Wartung: neue Box „WLAN-Geräte“ mit der Signalstärke (dBm) aller WLAN-Clients aus dem UniFi-Controller,

@@ -91,6 +91,10 @@ class UnifiClient:
                 async with self._s.post(self._basis + pfad, json=daten, ssl=False, timeout=TIMEOUT) as r:
                     if r.status == 404:
                         continue
+                    if r.status == 499:
+                        raise UnifiFehler(
+                            "Anmeldung verlangt Zwei-Faktor (Ubiquiti-Cloud-Konto) – bitte einen lokalen UniFi-Benutzer eintragen"
+                        )
                     if r.status in (400, 401, 403):
                         raise UnifiFehler("Anmeldung abgelehnt – Benutzername oder Passwort prüfen (lokaler Benutzer nötig)")
                     if r.status >= 400:
