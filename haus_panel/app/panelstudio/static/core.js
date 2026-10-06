@@ -140,13 +140,24 @@
     if (s === undefined || s === "unavailable") return true;
     return s === "unknown" && !OHNE_ZUSTAND.includes(PS.domain(eid));
   };
+  // Player ohne Wiedergabe (Beamer, Fernseher über PJLink o. ä.): nur Ein/Aus und Eingang, kein Play/Pause
+  PS.schaltPlayer = (eid) => {
+    if (PS.domain(eid) !== "media_player") return false;
+    const f = Number(PS.a(eid).supported_features) || 0;
+    return !(f & 1) && !(f & 16384) && !!(f & 128);
+  };
+  // PJLink-Eingänge lesbar: „DIGITAL 3“ -> „HDMI 3“, „NETWORK 1“ -> „Netzwerk“
+  PS.quelleText = (q) => {
+    const t = String(q || "").trim(), m = /^DIGITAL\s+(\d+)$/i.exec(t);
+    return m ? `HDMI ${m[1]}` : /^NETWORK\b/i.test(t) ? "Netzwerk" : t;
+  };
   PS.istAn = (eid) => {
     const s = PS.s(eid), d = PS.domain(eid);
     if (s == null) return false;
     if (d === "lock") return s === "unlocked" || s === "open" || s === "opening";
     if (d === "cover") return s === "open" || s === "opening";
     if (d === "alarm_control_panel") return s.startsWith("armed");
-    if (d === "media_player") return s === "playing";
+    if (d === "media_player") return PS.schaltPlayer(eid) ? s === "on" : s === "playing";
     if (d === "vacuum") return s === "cleaning";
     if (d === "climate") return s !== "off";
     if (d === "person" || d === "device_tracker") return s === "home";
@@ -201,6 +212,7 @@
       return s === "off" ? `Aus${ist ? " · " + ist : ""}` : `${ist}${a.temperature != null ? " → " + PS.zahl(a.temperature, 1) + "°" : ""}`;
     }
     if (d === "media_player" && s === "playing" && a.media_title) return a.media_title;
+    if (d === "media_player" && s === "on" && a.source) return `An · ${PS.quelleText(a.source)}`;
     if (d === "fan" && s === "on" && a.percentage != null) return `${a.percentage} %`;
     if (d === "timer" && s === "active" && a.finishes_at) return `bis ${PS.uhrzeit(new Date(a.finishes_at))}`;
     if (d === "scene" || d === "button" || d === "input_button") return s && s.length > 15 ? PS.zeitRelativ(s) : "–";
@@ -349,7 +361,9 @@
       case "scene": return PS.dienst("scene", "turn_on", { entity_id: eid }).then(() => PS.toast(`${PS.name(eid)} aktiviert`));
       case "script": return PS.dienst("script", "turn_on", { entity_id: eid }).then(() => PS.toast(`${PS.name(eid)} gestartet`));
       case "button": case "input_button": return PS.dienst(d, "press", { entity_id: eid }).then(() => PS.toast(`${PS.name(eid)} ausgelöst`));
-      case "media_player": return PS.dienst("media_player", "media_play_pause", { entity_id: eid });
+      case "media_player":
+        if (PS.schaltPlayer(eid)) return PS.dienst("media_player", s === "on" ? "turn_off" : "turn_on", { entity_id: eid });
+        return PS.dienst("media_player", "media_play_pause", { entity_id: eid });
       case "vacuum": return PS.dienst("vacuum", s === "cleaning" ? "return_to_base" : "start", { entity_id: eid });
       case "valve": return PS.dienst("valve", "toggle", { entity_id: eid });
       default: return null;

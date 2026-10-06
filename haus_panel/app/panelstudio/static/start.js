@@ -148,7 +148,7 @@
     pollen: ["flower-pollen-outline", "#f6d36b"], eigen: ["information-outline", "var(--lavender)"], neutral: ["information-outline", "var(--lavender)"],
     dusche: ["shower-head", "var(--info)"], spa: ["hot-tub", "var(--akzent)"], kohle: ["fire", "#ff9a5c"], waesche: ["washing-machine", "var(--info)"],
     meldung: ["bell-ring-outline", "var(--warn)"], spueler: ["dishwasher", "var(--info)"], robo: ["robot-vacuum", "var(--gut)"],
-    trockner: ["tumble-dryer", "var(--info)"], akku: ["battery-alert-variant-outline", "var(--warn)"], update: ["update", "var(--lavender)"], musik: ["music-note-outline", "#c99bf0"], ruhig: ["leaf", "var(--gut)"],
+    trockner: ["tumble-dryer", "var(--info)"], akku: ["battery-alert-variant-outline", "var(--warn)"], update: ["update", "var(--lavender)"], musik: ["music-note-outline", "#c99bf0"], beamer: ["projector", "var(--akzent)"], ruhig: ["leaf", "var(--gut)"],
   };
   PS.kartenIcon = (k) => (KARTE[k] || KARTE.neutral)[0];
   const LEER = { id: "leer", art: "hinweis", schluessel: "ruhig", titel: "Hinweise", wert: "Alles ruhig", hinweis: "Keine Hinweise und keine laufenden Geräte.", ring: null };
@@ -171,7 +171,7 @@
     const min = Math.ceil(Math.max(0, sek) / 60);
     return min >= 60 ? { zahl: `${Math.floor(min / 60)}:${String(min % 60).padStart(2, "0")}`, einheit: "h" } : { zahl: String(min), einheit: "min" };
   }
-  const AKT_KOPF = { waesche: "Gerät läuft", trockner: "Gerät läuft", spueler: "Gerät läuft", kohle: "Kohle", dusche: "Duschmodus", spa: "Spa", robo: "Saugroboter", musik: "Musik" };
+  const AKT_KOPF = { waesche: "Gerät läuft", trockner: "Gerät läuft", spueler: "Gerät läuft", kohle: "Kohle", dusche: "Duschmodus", spa: "Spa", robo: "Saugroboter", beamer: "Gerät läuft", musik: "Musik" };
   function modell(k) {
     let [icon, farbe] = KARTE[k.schluessel] || KARTE.neutral;
     const m = { kopf: k.titel || "Hinweis", farbe, anteil: 1, zahl: null, einheit: "", icon, h2: k.wert, p: k.hinweis };

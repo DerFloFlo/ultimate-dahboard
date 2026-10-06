@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.3.0 – 2026-10-06
+
+- Beamer (Optoma UHZ68LV, `media_player.optoma_beamer`): Kachel und Dialog schalten ihn ein und aus statt
+  Play/Pause zu senden, zeigen den Eingang lesbar („HDMI 3“ statt „DIGITAL 3“) und bieten die Eingänge sowie
+  Ton aus als Knöpfe an. Gilt für jeden Player ohne Wiedergabefunktion (z. B. Beamer oder Fernseher über PJLink).
+- Neue Aktivitätskarte „Beamer“ im Karussell, solange er läuft (im Editor unter Karten abschaltbar).
+
 ## 1.2.0 – 2026-10-06
 
 - Die Seitenleiste „Haus Panel“ öffnet jetzt direkt das Panel. Es läuft damit auch unterwegs in der

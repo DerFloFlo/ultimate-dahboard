@@ -2,7 +2,7 @@
 
 Hinweise entstehen auf zwei Wegen: automatisch aus den Zuständen im Haus (``auto_hinweise``: offene Türen und
 Fenster, Rauch- und Wasseralarm, schwache Batterien, Solarbank-Akku, Updates) und optional aus einem eigenen Sensor
-mit dem Attribut ``zeilen``. Aktivitäten (Waschmaschine, Trockner, Saugroboter, Musik) werden aus den
+mit dem Attribut ``zeilen``. Aktivitäten (Waschmaschine, Trockner, Saugroboter, Beamer, Musik) werden aus den
 Gerätezuständen berechnet.
 
 Eine Karte ist ein Dict:
@@ -37,6 +37,8 @@ QUELLEN = {
     "robo_status": "sensor.s8_maxv_ultra_status",
     "robo_fortschritt": "sensor.s8_maxv_ultra_reinigungsfortschritt",
     "robo_raum": "sensor.s8_maxv_ultra_aktueller_raum",
+    # Beamer (Optoma UHZ68LV über PJLink) im Wohnzimmer OG
+    "beamer": "media_player.optoma_beamer",
     # Für die automatischen Hinweise
     "offen": "sensor.keller_shc40b925_offene_turen_fenster",
     "solar_akku": "sensor.solarbank_2_e1600_pro_ladestand",
@@ -213,7 +215,35 @@ def akt_robo(states: States, jetzt: datetime) -> dict | None:
     }
 
 
-AKTIVITAETEN = (akt_waesche, akt_trockner, akt_robo)
+def quelle_text(quelle: Any) -> str:
+    """PJLink-Eingänge lesbar: ``DIGITAL 3`` -> ``HDMI 3``, ``NETWORK 1`` -> ``Netzwerk``."""
+    q = str(quelle or "").strip()
+    teile = q.upper().split()
+    if len(teile) == 2 and teile[0] == "DIGITAL" and teile[1].isdigit():
+        return f"HDMI {teile[1]}"
+    if teile and teile[0] == "NETWORK":
+        return "Netzwerk"
+    return q
+
+
+def akt_beamer(states: States, jetzt: datetime) -> dict | None:
+    if _state(states, QUELLEN["beamer"]) != "on":
+        return None
+    quelle = quelle_text(_attr(states, QUELLEN["beamer"], "source"))
+    return {
+        "id": "akt:beamer",
+        "art": "aktivitaet",
+        "schluessel": "beamer",
+        "titel": "Beamer",
+        "wert": "",
+        "hinweis": " · ".join(x for x in (quelle, "Wohnzimmer OG") if x),
+        "ring": None,
+        "ende": None,
+        "dauer_s": None,
+    }
+
+
+AKTIVITAETEN = (akt_waesche, akt_trockner, akt_robo, akt_beamer)
 MAX_MUSIK = 2
 
 

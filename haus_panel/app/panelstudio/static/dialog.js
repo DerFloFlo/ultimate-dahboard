@@ -347,6 +347,18 @@
   PS.medienSteuerung = (eid, gross) => {
     const st = PS.z[eid], a = st.a || {}, E = { entity_id: eid };
     const el = document.createElement("div"); el.className = "gross"; el.dataset.medien = eid; el.dataset.gross = gross ? "1" : "";
+    if (PS.schaltPlayer(eid)) {
+      const an = st.s === "on";
+      el.innerHTML = `<div class="titel">${PS.icon(eid)}<span>${PS.esc(PS.name(eid))}</span><small>${PS.esc(PS.text(eid, st.s))}</small></div>`;
+      el.appendChild(reihe(
+        knopf(an ? "Ausschalten" : "Einschalten", "power", svc("media_player", an ? "turn_off" : "turn_on", E), "primaer"),
+        an && ((a.supported_features || 0) & 8) ? knopf(a.is_volume_muted ? "Ton an" : "Ton aus", a.is_volume_muted ? "volume-high" : "volume-off", svc("media_player", "volume_mute", { ...E, is_volume_muted: !a.is_volume_muted })) : null,
+      ));
+      if (an && a.source_list && a.source_list.length) {
+        el.appendChild(reihe(...a.source_list.slice(0, 16).map((q) => knopf(PS.quelleText(q), /^NETWORK/i.test(q) ? "lan" : "video-input-hdmi", svc("media_player", "select_source", { ...E, source: q }), a.source === q ? "aktiv" : ""))));
+      }
+      return el;
+    }
     const bild = a.entity_picture ? `style="background-image:url('${PS.esc(PS.bildUrl(a.entity_picture).replace(/&t=\d+/, ""))}')"` : "";
     el.innerHTML = `<div class="titel">${PS.icon(eid)}<span>${PS.esc(PS.name(eid))}</span><small>${PS.esc(PS.text(eid, st.s))}</small></div>
       ${gross || a.media_title ? `<div class="medien-bild" ${bild}>${bild ? "" : PS.ic("music-note")}</div>` : ""}

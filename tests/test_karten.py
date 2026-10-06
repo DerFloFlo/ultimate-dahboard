@@ -106,3 +106,25 @@ def test_musik_karte_gruppen_einmal():
     assert k["wert"] == "2:30"
     assert k["unter"] == "Band · Wohnung"
     assert abs(k["ring"] - 0.75) < 0.01
+
+
+def test_beamer_an_mit_eingang():
+    states = {"media_player.optoma_beamer": st("on", source="DIGITAL 3", source_list=["DIGITAL 1", "DIGITAL 3"])}
+    k = kt.akt_beamer(states, JETZT)
+    assert (k["id"], k["schluessel"], k["titel"]) == ("akt:beamer", "beamer", "Beamer")
+    assert k["hinweis"] == "HDMI 3 · Wohnzimmer OG"
+    assert k in kt.berechne(states, "", JETZT)
+
+
+def test_beamer_aus_oder_nicht_erreichbar_ohne_karte():
+    for zustand in ("off", "unavailable"):
+        assert kt.akt_beamer({"media_player.optoma_beamer": st(zustand)}, JETZT) is None
+    assert kt.akt_beamer({}, JETZT) is None
+    assert kt.berechne({"media_player.optoma_beamer": st("on")}, "", JETZT, aus=["beamer"]) == []
+
+
+def test_quelle_text():
+    assert kt.quelle_text("DIGITAL 1") == "HDMI 1"
+    assert kt.quelle_text("NETWORK 1") == "Netzwerk"
+    assert kt.quelle_text("RGB 2") == "RGB 2"
+    assert kt.quelle_text(None) == ""
