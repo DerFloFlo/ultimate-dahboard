@@ -118,8 +118,8 @@ STANDARD_FREIGABEN: dict[str, str] = {}
 # Außenluftfeuchte: der erste verfügbare Sensor gilt (lokale Wetterstation, DWD als Rückfall)
 STANDARD_AUSSEN_FEUCHTE = ["sensor.innen_hinterm_haus_humidity"]
 
-# Bereiche ohne eigene Geräte (Dubletten in der HA-Registry); im Editor wieder einblendbar
-STANDARD_AUSBLENDEN = ["gastezimmer_dachgeschoss", "kuche", "wohnzimmer"]
+# Bereiche, die das Panel standardmäßig nicht zeigt (im Editor änderbar)
+STANDARD_AUSBLENDEN: list[str] = []
 
 
 @dataclass

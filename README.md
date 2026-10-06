@@ -29,7 +29,7 @@ Angepasste Fassung der App „PM Panel Studio“ aus
 | Schnellzugriff | Alarmanlage, Saugroboter, Wohnzimmer OG, Küchen-LED, Anwesenheitssimulation, Alle Lichter aus |
 | Sicherheit | Rauchmelder-Übersicht je Etage mit Batterie und Testalarm |
 | Wartung | Signalstärke der Geräte (WLAN, dBm, Bosch, Zigbee), schwächste zuerst |
-| Ausgeblendet | Status-LEDs der Meross-Steckdosen, Einstellungsschalter (Kindersicherung, Voralarm, Sirene bei Ereignis …), Ventile, leere Bereiche |
+| Ausgeblendet | Status-LEDs der Meross-Steckdosen, Einstellungsschalter (Kindersicherung, Voralarm, Sirene bei Ereignis …), Ventile |
 | Entfernt | Shisha-Seite, Kohlegrill, Dusch-/Spa-Timer, Spülmaschine des Originals |
 
 Alles Weitere (Module, Reihenfolge der Räume, Schnellzugriff, Kartentypen, Helligkeit) lässt sich im Editor in der

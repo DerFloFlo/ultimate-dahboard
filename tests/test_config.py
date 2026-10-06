@@ -62,7 +62,8 @@ def test_standardwerte_fuer_das_haus():
     assert Options.from_dict({"auto_hinweise": False}).auto_hinweise is False
     e = Einstellungen()
     assert "shisha" not in e.module and "wartung" in e.module
-    assert "kuche" in e.bereiche_ausblenden
+    assert e.bereiche_ausblenden == []
+    assert e.start_raeume == ["wohnzimmer_og", "arbeitszimmer_dachgeschoss", "oma_zimmer_ug"]
     assert e.gruss_anrede == {"person.florian_eichner": "Flo"}
 
 

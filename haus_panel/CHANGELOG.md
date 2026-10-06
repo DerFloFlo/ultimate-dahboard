@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.1.1 – 2026-10-06
+
+- Die doppelten, leeren Bereiche „Gästezimmer Dachgeschoss“, „Küche“ und „Wohnzimmer“ sind in Home Assistant
+  aufgelöst; das Panel blendet deshalb standardmäßig keine Bereiche mehr aus.
+
 ## 1.1.0 – 2026-10-06
 
 - Sicherheit: neue Box „Rauchmelder“ mit Gesamtzustand (Ring), auffälligen Meldern (Rauch, nicht erreichbar,
