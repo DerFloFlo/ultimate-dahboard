@@ -1,0 +1,45 @@
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-Regular.woff2") format("woff2");font-weight:400 500}
+@font-face{font-family:"Montserrat";src:url("fonts/Montserrat-SemiBold.woff2") format("woff2");font-weight:600}
+:root{--midnight:#0F0C2A;--navy:#262252;--violet:#443171;--purple:#784295;--lavender:#C5C0D3;--cloud:#ECEBF2;--linie:rgba(197,192,211,.16);--leise:#9a94b4;--gut:#5fd3a0;--krit:#ef6a7a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--midnight);color:var(--cloud);font:400 15px/1.6 "Montserrat","Segoe UI",system-ui,sans-serif;padding-inline:16px;padding-block:0 48px}
+.kopf{background:linear-gradient(135deg,#0F0C2A 0%,#262252 42%,#443171 74%,#784295 108%);margin-inline:-16px;padding:22px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.logo{height:40px}
+.kicker{font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#b07fd0}
+h1{margin:0;font-size:1.6rem;font-weight:600}
+h2{margin:8px 0 4px;font-size:1.15rem;font-weight:600}
+h3{margin:0 0 6px;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--leise)}
+p{margin:0 0 10px;color:var(--lavender);max-width:70ch}
+.status{margin-left:auto;font-size:.85rem;font-weight:600;padding:4px 12px;border-radius:99px;background:rgba(15,12,42,.4);border:1px solid var(--linie)}
+.status.ok{color:var(--gut)}.status.fehler{color:var(--krit)}
+main{max-width:960px;margin:24px auto 0;display:flex;flex-direction:column;gap:20px}
+.karte{background:var(--navy);border:1px solid var(--linie);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.adresse{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.adresse code{flex:1;min-width:0;overflow-wrap:anywhere;background:rgba(15,12,42,.6);border:1px solid var(--linie);border-radius:10px;padding:10px 12px;font-size:.85rem;user-select:all}
+.reihe{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,.knopf{font:600 .85rem "Montserrat",system-ui,sans-serif;color:var(--cloud);background:rgba(15,12,42,.55);border:1px solid var(--linie);border-radius:10px;padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.knopf:hover{border-color:rgba(197,192,211,.45)}
+button:focus-visible,.knopf:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--cloud);outline-offset:2px}
+.primaer{background:var(--purple);border-color:transparent}
+.gefahr{color:#ffd5db}
+.felder{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 24px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--leise)}
+label span{color:var(--cloud);display:flex;gap:8px;align-items:center}
+.haken{flex-direction:row;align-items:center;gap:8px;color:var(--cloud)}
+input[type=number]{width:90px}
+input,textarea,select{font:inherit;color:var(--cloud);background:rgba(15,12,42,.6);border:1px solid var(--linie);border-radius:8px;padding:7px 10px}
+textarea{width:100%;font-family:ui-monospace,Consolas,monospace;font-size:.85rem}
+#neu-entitaet{flex:1;min-width:220px}
+.sortier{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.sortier li{display:flex;align-items:center;gap:10px;background:rgba(15,12,42,.45);border:1px solid var(--linie);border-radius:10px;padding:6px 10px}
+.sortier li span{flex:1}
+.sortier li button{padding:4px 10px}
+.spalten{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.haken-liste{display:flex;flex-direction:column;gap:4px}
+.spalten3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.haken-liste label{flex-direction:row;align-items:center;gap:8px;color:var(--cloud);font-size:.9rem}
+.fuss{display:flex;justify-content:flex-end;align-items:center;gap:14px;border-top:1px solid var(--linie);padding-top:14px;margin-top:6px}
+.klein{font-size:.82rem;color:var(--leise)}
+.optionen{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:0;font-size:.85rem}
+.optionen dt{color:var(--leise)}
+.optionen dd{margin:0;overflow-wrap:anywhere;font-family:ui-monospace,Consolas,monospace}

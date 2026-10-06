@@ -1,0 +1,61 @@
+name: Haus Eichner Panel
+version: "1.0.0"
+slug: haus_panel
+description: >-
+  Wandpanel-Oberfläche für Tablets: rotierende Hinweiskarten mit Ringtimern, Ruhe- und Wachzustand,
+  Kamera bei Ereignissen und alle Funktionen des Hauses als Module.
+url: "https://github.com/DerFloFlo/ultimate-dahboard"
+arch:
+  - aarch64
+  - amd64
+init: false
+startup: application
+boot: auto
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:tablet-dashboard
+panel_title: Haus Panel
+panel_admin: true
+ports:
+  8098/tcp: 8098
+ports_description:
+  8098/tcp: Wandpanel (Zugang mit Zugangsschlüssel)
+homeassistant: "2026.9.0"
+homeassistant_api: true
+hassio_api: false
+stage: experimental
+timeout: 20
+watchdog: "http://[HOST]:[PORT:8099]/api/health"
+options:
+  hinweise_entitaet: ""
+  auto_hinweise: true
+  bewegung:
+    - binary_sensor.treppenaufgang_dg_bewegung
+    - binary_sensor.bad_dg_bewegung
+  personen:
+    - person.florian_eichner
+  wetter_entitaet: weather.forecast_home
+  aussentemperatur: ""
+  alarm_entitaet: alarm_control_panel.intrusion_detection_system
+  ereignis_ausloeser:
+    - binary_sensor.treppenaufgang_person
+  ereignis_kamera: camera.treppenaufgang_fliessend
+  tueroeffner: ""
+  klima_praefix: ""
+  log_level: info
+schema:
+  hinweise_entitaet: str?
+  auto_hinweise: bool
+  bewegung:
+    - str?
+  personen:
+    - str?
+  wetter_entitaet: str?
+  aussentemperatur: str?
+  alarm_entitaet: str?
+  ereignis_ausloeser:
+    - str?
+  ereignis_kamera: str?
+  tueroeffner: str?
+  klima_praefix: str?
+  log_level: list(debug|info|warning|error)

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0F0C2A">
+<title>Haus Eichner</title>
+<link rel="icon" href="static/img/icon.svg">
+<link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+<div class="bg"></div>
+
+<main class="start">
+  <section class="spalte links">
+    <div class="uhr" id="uhr">--:--</div>
+    <div class="datum" id="datum"></div>
+    <div class="wetter" id="wetter" hidden></div>
+    <div class="vorschau" id="vorschau"></div>
+    <div class="personen" id="personen"></div>
+    <div class="status-zeile" id="status"></div>
+    <p class="gruss" id="gruss" aria-live="polite"></p>
+  </section>
+  <section class="mitte">
+    <div class="karussell" id="karussell" aria-live="polite"></div>
+    <div class="punkte" id="punkte"></div>
+  </section>
+  <section class="spalte rechts">
+    <div class="glocke-zeile"><button class="glocke" id="glocke" aria-label="Meldungen"></button></div>
+    <div class="kacheln" id="kacheln"></div>
+    <div class="raeume-kurz" id="raeume-kurz"></div>
+  </section>
+  <nav class="dock" id="dock" aria-label="Module"></nav>
+</main>
+
+<section class="sheet" aria-label="Modul">
+  <div class="sheet-kopf">
+    <button class="zurueck" id="sheet-zurueck" aria-label="Zurück" hidden><i class="mdi">&#xF0141;</i></button>
+    <h1 id="sheet-titel"></h1>
+    <div class="tabs" id="sheet-tabs"></div>
+    <button class="zu" id="sheet-zu" aria-label="Schließen"><i class="mdi">&#xF0156;</i></button>
+  </div>
+  <div class="sheet-inhalt" id="sheet-inhalt"></div>
+</section>
+
+<div class="dialog-grund" id="dialog-grund"><div class="dialog" id="dialog" role="dialog" aria-modal="true"></div></div>
+
+<div class="ereignis" aria-live="assertive">
+  <div class="bild">
+    <div id="ereignis-kamera" class="kamera-voll"></div>
+    <span class="lbl"><i></i><span id="ereignis-titel">Tür</span></span>
+    <div class="akt">
+      <button class="knopf" id="ereignis-ignorieren">Schließen</button>
+      <button class="knopf primaer" id="ereignis-oeffnen">Tür öffnen (halten)</button>
+    </div>
+  </div>
+</div>
+
+<div class="dimmer"></div>
+<div class="offline">Verbindung zu Home Assistant unterbrochen</div>
+<div class="laden"><img src="static/img/logo.svg" alt="Haus Eichner"></div>
+
+<script src="static/hls.light.min.js"></script>
+<script src="static/mdi-map.js"></script>
+<script src="static/core.js"></script>
+<script src="static/dialog.js"></script>
+<script src="static/module.js"></script>
+<script src="static/seiten.js"></script>
+<script src="static/start.js"></script>
+</body>
+</html>

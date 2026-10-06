@@ -1,0 +1,11 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Haus Eichner Panel starten (Ingress-Port 8099, Panel-Port 8098, Daten in /data)
+# ==============================================================================
+bashio::log.info "Haus Eichner Panel startet ..."
+export PMPS_DATA_DIR=/data
+export PMPS_PORT=8099
+export PMPS_PANEL_PORT=8098
+cd /opt/haus_panel || bashio::exit.nok "Programmverzeichnis fehlt"
+exec python3 -m panelstudio

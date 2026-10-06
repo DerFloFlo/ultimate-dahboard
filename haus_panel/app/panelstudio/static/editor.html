@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Haus Eichner Panel</title>
+<link rel="icon" href="static/img/icon.svg">
+<link rel="stylesheet" href="static/editor.css">
+</head>
+<body>
+<header class="kopf">
+  <img src="static/img/logo.svg" alt="Haus Eichner" class="logo">
+  <div>
+    <span class="kicker">Haus Eichner Panel</span>
+    <h1>Wandpanel Flur</h1>
+  </div>
+  <span class="status" id="status">Verbinde …</span>
+</header>
+
+<main>
+  <section class="karte">
+    <h2>Panel einrichten</h2>
+    <p>Diese Adresse einmal im Kiosk-Browser des Surface öffnen. Danach merkt sich der Browser den Zugang. Die Adresse enthält den Zugangsschlüssel und gehört nur auf das Wandpanel.</p>
+    <div class="adresse"><code id="adresse">…</code><button id="kopieren" type="button">Kopieren</button></div>
+    <div class="reihe">
+      <a class="knopf" href="panel" target="_blank" rel="noopener">Vorschau öffnen</a>
+      <button class="knopf" id="test-ereignis" type="button">Ereignis testen</button>
+      <button class="knopf gefahr" id="token-neu" type="button">Neuen Schlüssel erzeugen</button>
+    </div>
+    <p class="klein" id="token-hinweis" hidden>Neuer Schlüssel aktiv. Verbundene Panels wurden getrennt und brauchen die neue Adresse.</p>
+  </section>
+
+  <form id="form" class="karte">
+    <h2>Verhalten</h2>
+    <div class="felder">
+      <label>Verweildauer je Karte <span><input id="verweildauer_s" type="number" min="3" max="60"> s</span></label>
+      <label>Ruhezustand nach <span><input id="ruhe_nach_s" type="number" min="10" max="3600"> s ohne Bewegung</span></label>
+      <label>Zurück zur Startseite nach <span><input id="bedienung_zurueck_s" type="number" min="15" max="600"> s ohne Berührung</span></label>
+      <label>Abdunklung in Ruhe <span><input id="ruhe_helligkeit" type="number" min="0" max="90"> %</span></label>
+      <label>Abdunklung nachts <span><input id="nacht_helligkeit" type="number" min="0" max="95"> %</span></label>
+      <label>Kamera-Overlay zeigen für <span><input id="ereignis_dauer_s" type="number" min="15" max="600"> s</span></label>
+      <label>Lautstärke Hinweiston <span><input id="ton_lautstaerke" type="number" min="5" max="100"> %</span></label>
+      <label class="haken"><input id="animationen" type="checkbox"> Animationen</label>
+      <label class="haken"><input id="ton_hoch" type="checkbox"> Ton bei Meldungen mit Priorität hoch</label>
+      <label class="haken"><input id="gruss" type="checkbox"> Begrüßung unten links (Ankunft, morgens, nachts)</label>
+    </div>
+
+    <h2>Schnellzugriff</h2>
+    <p>Bis zu sechs Kacheln rechts auf der Startseite, in dieser Reihenfolge. Eine Entität je Zeile.</p>
+    <textarea id="schnellzugriff" rows="6" spellcheck="false" list="entitaeten"></textarea>
+    <div class="reihe"><input id="neu-entitaet" list="entitaeten" placeholder="Entität suchen und hinzufügen"><button type="button" class="knopf" id="hinzu">Hinzufügen</button></div>
+    <datalist id="entitaeten"></datalist>
+
+    <h2>Module</h2>
+    <p>Sichtbare Module in der Leiste unten, Reihenfolge mit den Pfeilen.</p>
+    <ul class="sortier" id="module"></ul>
+
+    <h2>Räume</h2>
+    <div class="spalten">
+      <div><h3>Auf der Startseite</h3><div id="start_raeume" class="haken-liste"></div></div>
+      <div><h3>Ausblenden</h3><div id="bereiche_ausblenden" class="haken-liste"></div></div>
+    </div>
+
+    <h2>Modi je Raum</h2>
+    <p>Schalter und Helfer ohne Bereich, die in der Raumansicht unter „Modi“ erscheinen. Eine Zeile je Raum: <code>bereich: entität, entität</code>. Ein hier zugeordneter Schalter erscheint nur in diesen Räumen.</p>
+    <textarea id="raum_schalter" rows="8" spellcheck="false"></textarea>
+
+    <h2>Szenen in der Raumansicht</h2>
+    <p>Die Raumansicht zeigt die sechs häufigsten Szenen je Raum, gewichtet nach Tageszeit. Angeheftete Szenen stehen immer vorn, ausgeblendete erscheinen nur unter „Weitere Szenen“. Eine Szene je Zeile.</p>
+    <div class="spalten">
+      <label>Angeheftet<textarea id="szenen_angeheftet" rows="4" spellcheck="false"></textarea></label>
+      <label>Ausgeblendet<textarea id="szenen_aus" rows="4" spellcheck="false"></textarea></label>
+    </div>
+
+    <h2>Verbrauchsmaterial</h2>
+    <p>Automatisch erkennt das Panel Filter, Bürsten und Sensoren (Luftreiniger, Roborock). Manuell zeigt es nur die hier eingetragenen Sensoren, einen je Zeile.</p>
+    <div class="spalten">
+      <label>Auswahl<select id="material_modus"><option value="auto">Automatisch</option><option value="manuell">Manuell (feste Einträge)</option></select></label>
+      <label>Feste Einträge<textarea id="material_fest" rows="4" spellcheck="false"></textarea></label>
+    </div>
+
+    <h2>Wartung und Außenwerte</h2>
+    <div class="spalten">
+      <label>Systemzustand: nicht prüfen (je Zeile eine Entität des Geräts)<textarea id="wartung_ignorieren" rows="4" spellcheck="false"></textarea></label>
+      <label>Außenluftfeuchte (der erste verfügbare Sensor gilt)<textarea id="aussen_feuchte" rows="4" spellcheck="false"></textarea></label>
+    </div>
+
+    <h2>Karten im Karussell</h2>
+    <p>Abgewählte Kartentypen zeigt der Flur nicht. Die Panels Bad und Büro bleiben unberührt.</p>
+    <div id="karten_aus" class="haken-liste spalten3"></div>
+
+    <div class="fuss">
+      <span id="gespeichert" class="klein"></span>
+      <button class="knopf primaer" type="submit">Speichern</button>
+    </div>
+  </form>
+
+  <section class="karte">
+    <h2>Feste Zuordnungen</h2>
+    <p>Diese Werte stehen in den Optionen der App (Einstellungen → Apps → Haus Eichner Panel → Konfiguration).</p>
+    <dl id="optionen" class="optionen"></dl>
+  </section>
+</main>
+<script src="static/editor.js"></script>
+</body>
+</html>

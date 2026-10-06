@@ -1,0 +1,39 @@
+configuration:
+  hinweise_entitaet:
+    name: Hint sensor
+    description: Optional sensor with the attribute zeilen (one line per card, key|title|value|hint). Empty = automatic hints only.
+  auto_hinweise:
+    name: Automatic hints
+    description: The app creates hint cards for open doors and windows, smoke and water alarms, weak batteries, the Solarbank battery and available updates.
+  bewegung:
+    name: Motion sensors
+    description: Motion wakes the panel from rest mode.
+  personen:
+    name: Persons
+    description: Persons shown with presence on the start screen.
+  wetter_entitaet:
+    name: Weather
+    description: weather entity for current conditions and forecast.
+  aussentemperatur:
+    name: Outdoor temperature
+    description: Sensor for the large temperature. Empty = temperature of the weather entity.
+  alarm_entitaet:
+    name: Alarm panel
+    description: alarm_control_panel for the status line.
+  ereignis_ausloeser:
+    name: Event triggers
+    description: When one of these turns on, the panel shows the camera full screen.
+  ereignis_kamera:
+    name: Event camera
+    description: Camera for the overlay.
+  tueroeffner:
+    name: Door opener
+    description: button or lock entity for "open door". Fires only after holding for 2 seconds.
+  klima_praefix:
+    name: Thermostat prefix
+    description: Optional. Only thermostats with this prefix are shown. Empty = all thermostats (default).
+  log_level:
+    name: Log level
+    description: debug, info, warning or error.
+network:
+  8098/tcp: Wall panel on the local network

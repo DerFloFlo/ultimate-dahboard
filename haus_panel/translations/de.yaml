@@ -1,0 +1,39 @@
+configuration:
+  hinweise_entitaet:
+    name: Hinweis-Sensor
+    description: Optional. Sensor mit dem Attribut zeilen (je Zeile schluessel|Titel|Wert|Hinweis) für eigene Hinweiskarten. Leer = nur die automatischen Hinweise.
+  auto_hinweise:
+    name: Automatische Hinweise
+    description: Die App erzeugt selbst Hinweiskarten für offene Türen und Fenster, Rauch- und Wasseralarm, schwache Batterien, den Solarbank-Akku und verfügbare Updates.
+  bewegung:
+    name: Bewegungsmelder
+    description: Bewegung an einem dieser Melder weckt das Panel aus dem Ruhezustand.
+  personen:
+    name: Personen
+    description: Personen mit Anwesenheit auf der Startseite.
+  wetter_entitaet:
+    name: Wetter
+    description: weather-Entität für aktuelle Lage und Vorschau (Standard weather.forecast_home von Met.no).
+  aussentemperatur:
+    name: Außentemperatur
+    description: Sensor für die große Temperaturanzeige. Leer = Temperatur der Wetter-Entität.
+  alarm_entitaet:
+    name: Alarmanlage
+    description: alarm_control_panel für die Statuszeile.
+  ereignis_ausloeser:
+    name: Ereignis-Auslöser
+    description: Wechselt eine dieser Entitäten auf „an“, zeigt das Panel die Kamera im Vollbild (z. B. Person oder Klingel an der Tür).
+  ereignis_kamera:
+    name: Ereignis-Kamera
+    description: Kamera für das Overlay.
+  tueroeffner:
+    name: Türöffner
+    description: button- oder lock-Entität für „Tür öffnen“. Auslösen nur nach 2 Sekunden Halten.
+  klima_praefix:
+    name: Thermostat-Präfix
+    description: Optional. Nur Thermostate mit diesem Präfix werden gezeigt. Leer = alle Thermostate (Standard).
+  log_level:
+    name: Protokollstufe
+    description: debug, info, warning oder error.
+network:
+  8098/tcp: Wandpanel im lokalen Netz
