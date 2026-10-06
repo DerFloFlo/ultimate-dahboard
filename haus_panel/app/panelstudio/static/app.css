@@ -475,12 +475,12 @@ body.ruhe .gruss.an{opacity:.6}
 /* Handy (z. B. iPhone über die Home-Assistant-App) */
 @media (max-width:600px){
   :root{font-size:11px}
-  .start{grid-template-columns:minmax(0,1fr);overflow-x:hidden;padding-left:16px;padding-right:16px}
+  .start{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-rows:max-content;align-content:start;overflow-x:hidden;padding-left:16px;padding-right:16px}
   .start>*{min-width:0;max-width:100%}
   .uhr{font-size:6rem}
   .karussell{min-height:24rem}
   .kacheln{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
-  .dock{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .dock{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;min-height:max-content;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;bottom:0;z-index:5;margin:0 -16px;max-width:none;max-width:none;padding:.4rem 16px max(.4rem,env(safe-area-inset-bottom));background:linear-gradient(to top,var(--midnight) 70%,transparent)}
   .dock::-webkit-scrollbar{display:none}
   .dock button{flex:0 0 auto;padding:.7rem .9rem}
   .sheet{left:0;right:0;top:max(.6rem,env(safe-area-inset-top))}

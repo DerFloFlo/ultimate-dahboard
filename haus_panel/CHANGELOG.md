@@ -1,5 +1,10 @@
 # Änderungen
 
+## 1.3.1 – 2026-10-06
+
+- iPhone: Die Modulleiste (Räume, Klima, Licht, Sicherheit, Wartung …) war seit 1.2.0 auf null Höhe
+  zusammengefallen. Sie steht jetzt fest am unteren Rand und lässt sich seitlich wischen. iPad unverändert.
+
 ## 1.3.0 – 2026-10-06
 
 - Beamer (Optoma UHZ68LV, `media_player.optoma_beamer`): Kachel und Dialog schalten ihn ein und aus statt
