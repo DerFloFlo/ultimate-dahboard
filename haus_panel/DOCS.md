@@ -35,6 +35,20 @@ Der Zugangsschlüssel liegt in `/data/panel_token`. „Neuen Schlüssel erzeugen
   `turn_on`, `turn_off`, `toggle`, `update_entity`.
 - Lesende Abfragen nur über eine feste Liste (To-dos, Verlauf, Logbuch, Kalender, Statistik).
 
+## WLAN-Signalstärken (UniFi)
+
+Die UniFi-Integration von Home Assistant liefert keine Signalstärken der WLAN-Geräte. Das Panel fragt sie deshalb
+direkt beim UniFi-Controller ab (nur lesend, jede Minute) und zeigt sie unter **Wartung → WLAN-Geräte**.
+Dafür in der App-Konfiguration eintragen:
+
+| Option | Inhalt |
+|--------|--------|
+| `unifi_adresse` | IP des Controllers, z. B. `192.168.1.1` (Cloud Gateway / Dream Machine) oder `https://IP:8443` |
+| `unifi_benutzer` / `unifi_passwort` | Lokaler UniFi-Benutzer; Rolle „Nur lesen“ genügt |
+| `unifi_site` | Site-ID, meist `default` |
+
+Leere Felder schalten die Box ab.
+
 ## Kiosk auf den Tablets
 
 - **iPad:** Panel-Adresse mit `?token=…` aus dem Editor in Safari öffnen (im WLAN, nicht über Nabu Casa), „Zum Home-Bildschirm“ hinzufügen und die

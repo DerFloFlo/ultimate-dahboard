@@ -252,6 +252,39 @@
     return b;
   }
 
+  // WLAN-Geräte vom UniFi-Controller (Signal in dBm: −50 sehr gut … −80 schwach)
+  const wlanAnteil = (dbm) => Math.max(0, Math.min(1, (dbm + 90) / 45));
+  function wlanZeile(g) {
+    const a = wlanAnteil(g.signal);
+    const info = [g.band, g.ap, g.ssid].filter(Boolean).join(" · ");
+    return E(`<div class="balken-zeile wlan-zeile"><span>${PS.esc(g.name)}${info ? `<small>${PS.esc(info)}</small>` : ""}</span><span class="w tabular">${g.signal} dBm</span><div class="bar"><i style="width:${Math.max(1, a * 100)}%;background:${signalFarbe(a)}"></i></div></div>`);
+  }
+  function wlanBox() {
+    const w = PS.wlan;
+    if (!w || !w.aktiv) return null;
+    const liste = w.geraete || [];
+    const schwach = liste.filter((g) => wlanAnteil(g.signal) < 0.3).length;
+    const b = box("WLAN-Geräte", w.fehler ? "UniFi nicht erreichbar" : !w.stand ? "wird geladen" : `${liste.length} verbunden${schwach ? ` · ${schwach} schwach` : ""}`);
+    b.classList.add("wlan-box");
+    if (w.fehler) { b.appendChild(E(`<div class="leer">${PS.esc(w.fehler)}</div>`)); return b; }
+    if (!liste.length) { b.appendChild(E(`<div class="leer">${w.stand ? "Keine WLAN-Geräte verbunden." : "Daten vom UniFi-Controller werden geladen …"}</div>`)); return b; }
+    liste.slice(0, 6).forEach((g) => b.appendChild(wlanZeile(g)));
+    b.appendChild(knopf(`Alle ${liste.length} WLAN-Geräte`, "wifi", () => PS.unterseite("WLAN-Geräte", (el) => {
+      const jeAp = new Map();
+      (PS.wlan.geraete || []).forEach((g) => { const k = g.ap || "Zugangspunkt unbekannt"; if (!jeAp.has(k)) jeAp.set(k, []); jeAp.get(k).push(g); });
+      [...jeAp.entries()].sort((x, y) => y[1].length - x[1].length).forEach(([ap, gs]) => {
+        const g = box(ap, `${gs.length} ${gs.length === 1 ? "Gerät" : "Geräte"}`);
+        gs.forEach((x) => g.appendChild(wlanZeile(x)));
+        el.appendChild(g);
+      });
+    }), "r-alles"));
+    return b;
+  }
+  PS.on("wlan", () => {
+    const alt = document.querySelector(".wlan-box"); if (!alt) return;
+    const neu = wlanBox(); if (neu) { neu.style.animation = "none"; alt.replaceWith(neu); }
+  });
+
   // Aufnahmen der Reolink-Kamera (Medienquelle): heute und gestern, antippen spielt sie ab
   const ART = { person: "Person", motion: "Bewegung", vehicle: "Fahrzeug", pet: "Tier", animal: "Tier", visitor: "Klingel", face: "Gesicht", package: "Paket" };
   function aufnahmeZeile(a, tag) {
@@ -458,6 +491,7 @@
     const b3 = box("Batterien", "schwächste zuerst");
     batt.slice(0, 6).forEach((e) => b3.appendChild(balken(PS.name(e), `${PS.zahl(num(e), 0)} %`, num(e) / 100, num(e) < 20 ? "var(--krit)" : num(e) < 35 ? "var(--warn)" : null, e)));
     m.appendChild(b3);
+    const wl = wlanBox(); if (wl) m.appendChild(wl);
     const mat = PS.verbrauchsmaterial();
     const b4 = box("Verbrauchsmaterial", PS.einst.material_modus === "manuell" ? "feste Auswahl" : "automatisch");
     mat.slice(0, 7).forEach(({ e, rest, text, name }) => b4.appendChild(balken(name, text, rest == null ? 1 : rest, rest == null ? null : rest < 0.1 ? "var(--krit)" : rest < 0.25 ? "var(--warn)" : "var(--gut)", e)));

@@ -168,6 +168,8 @@ class Hub:
         # Ereignis
         self.ereignis: dict[str, Any] | None = None
         self._ereignis_bis = 0.0
+        # WLAN-Geräte vom UniFi-Controller (nur wenn in den App-Optionen eingetragen)
+        self.wlan: dict[str, Any] = {"aktiv": opts.unifi_aktiv, "geraete": [], "fehler": None, "stand": None}
 
     # ------------------------------------------------------------ Lebenszyklus
 
@@ -184,6 +186,8 @@ class Hub:
             asyncio.create_task(self._takt_loop(), name="takt"),
             asyncio.create_task(self._registry_loop(), name="registry"),
         ]
+        if self.opts.unifi_aktiv:
+            self._tasks.append(asyncio.create_task(self._unifi_loop(), name="unifi"))
 
     async def stop(self) -> None:
         for t in self._tasks:
@@ -194,6 +198,17 @@ class Hub:
         for ws in list(self.clients):
             with contextlib.suppress(Exception):
                 await ws.close()
+
+    async def _unifi_loop(self) -> None:
+        """WLAN-Geräte mit Signalstärke alle 60 s beim UniFi-Controller abfragen."""
+        from .unifi import UnifiClient, abfrage
+
+        o = self.opts
+        uc = UnifiClient(self.client._session, o.unifi_adresse, o.unifi_benutzer, o.unifi_passwort, o.unifi_site)
+        while True:
+            self.wlan = await abfrage(uc)
+            await self.senden_alle({"typ": "wlan", **self.wlan})
+            await asyncio.sleep(60 if not self.wlan.get("fehler") else 300)
 
     async def _verbindung_loop(self) -> None:
         versuch = 0
@@ -533,6 +548,7 @@ class Hub:
             "popups": self.popups.liste(),
             "szenen": {"stat": self.szenen_stat, "farben": self.szenen_farben},
             "ereignis": self.ereignis or {"aktiv": False},
+            "wlan": self.wlan,
             "ha": {
                 "standort": self.ha_config.get("location_name"),
                 "zeitzone": self.ha_config.get("time_zone"),

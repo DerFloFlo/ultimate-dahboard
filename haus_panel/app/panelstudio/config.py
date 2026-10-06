@@ -58,6 +58,10 @@ class Options:
     ereignis_kamera: str = "camera.treppenaufgang_fliessend"
     tueroeffner: str = ""
     klima_praefix: str = ""
+    unifi_adresse: str = ""
+    unifi_benutzer: str = ""
+    unifi_passwort: str = ""
+    unifi_site: str = "default"
     log_level: str = "info"
 
     @classmethod
@@ -85,14 +89,20 @@ class Options:
                 setattr(opts, f.name, _entities(val))
             elif f.name == "auto_hinweise":
                 setattr(opts, f.name, bool(val))
-            elif f.name in ("log_level", "klima_praefix"):
+            elif f.name in ("log_level", "klima_praefix") or f.name.startswith("unifi_"):
                 setattr(opts, f.name, str(val or "").strip())
             else:
                 setattr(opts, f.name, _entity(val))
         return opts
 
+    @property
+    def unifi_aktiv(self) -> bool:
+        return bool(self.unifi_adresse and self.unifi_benutzer and self.unifi_passwort)
+
     def public(self) -> dict[str, Any]:
-        return asdict(self)
+        d = asdict(self)
+        d["unifi_passwort"] = "••••" if self.unifi_passwort else ""
+        return d
 
 
 # ---------------------------------------------------------------- Einstellungen

@@ -32,6 +32,18 @@ configuration:
   klima_praefix:
     name: Thermostat-Präfix
     description: Optional. Nur Thermostate mit diesem Präfix werden gezeigt. Leer = alle Thermostate (Standard).
+  unifi_adresse:
+    name: UniFi-Controller
+    description: Optional. Adresse des UniFi-Controllers (z. B. 192.168.20.1 für Cloud Gateway/Dream Machine, oder https://IP:8443 für einen eigenen Controller). Liefert die WLAN-Signalstärken unter Wartung.
+  unifi_benutzer:
+    name: UniFi-Benutzer
+    description: Lokaler UniFi-Benutzer (kein Ubiquiti-Cloud-Konto), Rolle „Nur lesen“ genügt.
+  unifi_passwort:
+    name: UniFi-Passwort
+    description: Passwort des lokalen UniFi-Benutzers.
+  unifi_site:
+    name: UniFi-Site
+    description: Site-ID im Controller, meist „default“.
   log_level:
     name: Protokollstufe
     description: debug, info, warning oder error.

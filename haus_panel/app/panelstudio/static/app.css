@@ -491,3 +491,4 @@ body.ruhe .gruss.an{opacity:.6}
   .raum-ansicht,.raum-ansicht.breit-mitte{grid-template-columns:minmax(0,1fr)}
   .r-spalte{overflow:visible}
 }
+.wlan-zeile>span:first-child small{display:block;font-size:.85rem;color:var(--leise);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

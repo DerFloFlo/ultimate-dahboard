@@ -1,5 +1,5 @@
 name: Haus Eichner Panel
-version: "1.3.1"
+version: "1.4.0"
 slug: haus_panel
 description: >-
   Wandpanel-Oberfläche für Tablets: rotierende Hinweiskarten mit Ringtimern, Ruhe- und Wachzustand,
@@ -42,6 +42,10 @@ options:
   ereignis_kamera: camera.treppenaufgang_fliessend
   tueroeffner: ""
   klima_praefix: ""
+  unifi_adresse: ""
+  unifi_benutzer: ""
+  unifi_passwort: ""
+  unifi_site: default
   log_level: info
 schema:
   hinweise_entitaet: str?
@@ -58,4 +62,8 @@ schema:
   ereignis_kamera: str?
   tueroeffner: str?
   klima_praefix: str?
+  unifi_adresse: str?
+  unifi_benutzer: str?
+  unifi_passwort: password?
+  unifi_site: str?
   log_level: list(debug|info|warning|error)

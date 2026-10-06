@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.4.0 – 2026-10-06
+
+- Wartung: neue Box „WLAN-Geräte“ mit der Signalstärke (dBm) aller WLAN-Clients aus dem UniFi-Controller,
+  schwächste zuerst, mit Funkband, Zugangspunkt und SSID; „Alle … WLAN-Geräte“ gruppiert nach Zugangspunkt.
+  Aktualisierung jede Minute. Neue App-Optionen `unifi_adresse`, `unifi_benutzer`, `unifi_passwort`, `unifi_site`
+  (UniFi OS und klassischer Controller, nur lesender Zugriff).
+
 ## 1.3.1 – 2026-10-06
 
 - iPhone: Die Modulleiste (Räume, Klima, Licht, Sicherheit, Wartung …) war seit 1.2.0 auf null Höhe
