@@ -16,6 +16,7 @@ import re
 import secrets
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import aiohttp
 from aiohttp import web
@@ -69,11 +70,14 @@ async def panel_zugang(request: web.Request, handler):
         return await handler(request)
     angegeben = request.query.get("token")
     if angegeben is not None:
-        if secrets.compare_digest(angegeben, token):
-            resp = web.HTTPFound("/")
-            resp.set_cookie(COOKIE, token, max_age=10 * 365 * 86400, httponly=True, samesite="Strict")
-            raise resp
-        raise web.HTTPForbidden(text="Zugangsschlüssel ungültig.")
+        if not secrets.compare_digest(angegeben, token):
+            raise web.HTTPForbidden(text="Zugangsschlüssel ungültig.")
+        # Seite direkt ausliefern (keine Weiterleitung): Safari auf iPad/iPhone verwirft sonst je nach Herkunft des
+        # Links das Cookie, und Home-Bildschirm-Web-Apps haben einen eigenen Cookie-Speicher. Mit dem Schlüssel in
+        # der Adresse funktioniert auch das Lesezeichen auf dem Home-Bildschirm dauerhaft.
+        resp = await handler(request)
+        resp.set_cookie(COOKIE, token, max_age=10 * 365 * 86400, httponly=True, samesite="Lax")
+        return resp
     if not secrets.compare_digest(request.cookies.get(COOKIE, ""), token):
         raise web.HTTPForbidden(
             text="Kein Zugang. Bitte die Panel-Adresse mit Zugangsschlüssel aus Haus Eichner Panel (Seitenleiste) öffnen."
@@ -263,6 +267,27 @@ async def video(request: web.Request) -> web.StreamResponse:
     return ziel
 
 
+async def lokale_hosts(hub: Hub) -> list[str]:
+    """Adressen, unter denen Home Assistant im Heimnetz erreichbar ist (für die Panel-Adresse im Editor)."""
+    urls: list[str] = []
+    with contextlib.suppress(Exception):
+        r = await hub.client.ws_command({"type": "network/url"}, timeout=5)
+        if isinstance(r, dict) and r.get("internal"):
+            urls.append(r["internal"])
+    with contextlib.suppress(Exception):
+        c = await hub.client.get_config()
+        if c.get("internal_url"):
+            urls.append(c["internal_url"])
+    hosts: list[str] = []
+    for u in urls:
+        h = urlsplit(u).hostname
+        if h and h not in hosts:
+            hosts.append(h)
+    if "homeassistant.local" not in hosts:
+        hosts.append("homeassistant.local")
+    return hosts
+
+
 async def einstellungen_get(request: web.Request) -> web.Response:
     hub = request.app[K_HUB]
     return web.json_response(
@@ -271,6 +296,7 @@ async def einstellungen_get(request: web.Request) -> web.Response:
             "optionen": hub.opts.public(),
             "token": request.app[K_TOKEN][0],
             "port": int(os.environ.get("PMPS_PANEL_PORT", "8098")),
+            "hosts": await lokale_hosts(hub),
             "version": __version__,
             "verbunden": hub.verbunden,
             "panels": len(hub.clients),

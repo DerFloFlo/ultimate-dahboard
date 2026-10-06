@@ -21,13 +21,32 @@
     st.textContent = daten.verbunden ? `Verbunden · ${daten.panels} Anzeige${daten.panels === 1 ? "" : "n"} offen · ${daten.version}` : "Home Assistant nicht erreichbar";
     st.className = "status " + (daten.verbunden ? "ok" : "fehler");
   }
-  function adresse() {
-    const host = location.hostname || "homeassistant.local";
-    return `http://${host}:${daten.port}/?token=${encodeURIComponent(daten.token)}`;
+  const LOKAL = /^(localhost|\d{1,3}(\.\d{1,3}){3}|\[?[0-9a-f:]+\]?|[^.]+|.+\.(local|lan|home|internal|fritz\.box))$/i;
+  function adressen() {
+    const hosts = [...(daten.hosts || [])];
+    const h = location.hostname;
+    if (h && LOKAL.test(h) && !hosts.includes(h)) hosts.unshift(h);
+    if (!hosts.length) hosts.push("homeassistant.local");
+    return hosts.map((x) => `http://${x.includes(":") ? "[" + x + "]" : x}:${daten.port}/?token=${encodeURIComponent(daten.token)}`);
+  }
+  function kopieren(text, knopf) {
+    const fertig = () => { knopf.textContent = "Kopiert"; setTimeout(() => { knopf.textContent = "Kopieren"; }, 2000); };
+    const notfall = () => {
+      const t = document.createElement("textarea"); t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select(); t.setSelectionRange(0, text.length);
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      t.remove(); if (ok) fertig(); else knopf.textContent = "Bitte lange drücken";
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(fertig, notfall); else notfall();
+  }
+  function adressenZeigen() {
+    const ul = $("#adressen");
+    ul.innerHTML = adressen().map((a, i) => `<li><a href="${esc(a)}" target="_blank" rel="noopener">${esc(a)}</a><button type="button" class="kopieren" data-i="${i}">Kopieren</button></li>`).join("");
+    ul.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => kopieren(adressen()[+b.dataset.i], b)));
   }
   function zeigen() {
     const e = daten.einstellungen;
-    $("#adresse").textContent = adresse();
+    adressenZeigen();
     ZAHLEN.forEach((k) => { $("#" + k).value = e[k]; });
     $("#animationen").checked = e.animationen !== false;
     $("#ton_hoch").checked = e.ton_hoch !== false;
@@ -109,11 +128,6 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     $("#form").addEventListener("submit", speichern);
-    $("#kopieren").addEventListener("click", () => {
-      navigator.clipboard.writeText(adresse()).then(() => { $("#kopieren").textContent = "Kopiert"; }, () => {
-        const r = document.createRange(); r.selectNodeContents($("#adresse")); getSelection().removeAllRanges(); getSelection().addRange(r);
-      });
-    });
     $("#hinzu").addEventListener("click", () => {
       const v = $("#neu-entitaet").value.trim(); if (!v) return;
       $("#schnellzugriff").value = ($("#schnellzugriff").value.trim() + "\n" + v).trim(); $("#neu-entitaet").value = "";

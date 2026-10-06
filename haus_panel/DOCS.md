@@ -37,7 +37,7 @@ Der Zugangsschlüssel liegt in `/data/panel_token`. „Neuen Schlüssel erzeugen
 
 ## Kiosk auf den Tablets
 
-- **iPad:** Panel-Adresse mit `?token=…` einmal in Safari öffnen, „Zum Home-Bildschirm“ hinzufügen und die
+- **iPad:** Panel-Adresse mit `?token=…` aus dem Editor in Safari öffnen (im WLAN, nicht über Nabu Casa), „Zum Home-Bildschirm“ hinzufügen und die
   Web-App starten. Mit „Geführter Zugriff“ (Einstellungen → Bedienungshilfen) bleibt das iPad im Panel.
   Automatische Sperre auf „Nie“ stellen; die App dunkelt selbst ab.
 - **Samsung Tab:** Fully Kiosk Browser oder Chrome („Zum Startbildschirm hinzufügen“) mit der Panel-Adresse;

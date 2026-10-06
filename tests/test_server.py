@@ -25,7 +25,8 @@ async def test_panel_braucht_zugangsschluessel(panel, token):
     r = await panel.get("/?token=falsch")
     assert r.status == 403
     r = await panel.get(f"/?token={token[0]}", allow_redirects=False)
-    assert r.status == 302 and "pmps_zugang" in r.cookies
+    assert r.status == 200 and "pmps_zugang" in r.cookies and "Haus Eichner" in await r.text()
+    panel.session.cookie_jar.clear()
     panel.session.cookie_jar.update_cookies({"pmps_zugang": token[0]})
     r = await panel.get("/")
     assert r.status == 200 and "Haus Eichner" in await r.text()

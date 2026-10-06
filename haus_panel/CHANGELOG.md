@@ -1,5 +1,13 @@
 # Änderungen
 
+## 1.1.2 – 2026-10-06
+
+- Panel-Adresse auf dem iPad: Der Editor zeigt jetzt anklickbare Adressen mit der lokalen Adresse von Home
+  Assistant statt des Hostnamens, unter dem der Editor geöffnet wurde (über Nabu Casa ergab das eine Adresse, die
+  im Heimnetz nicht erreichbar ist). „Kopieren“ funktioniert auch in Safari ohne HTTPS.
+- Der Zugangsschlüssel öffnet das Panel direkt statt über eine Weiterleitung. Safari behält damit den Zugang, und
+  ein Lesezeichen auf dem Home-Bildschirm funktioniert dauerhaft.
+
 ## 1.1.1 – 2026-10-06
 
 - Die doppelten, leeren Bereiche „Gästezimmer Dachgeschoss“, „Küche“ und „Wohnzimmer“ sind in Home Assistant

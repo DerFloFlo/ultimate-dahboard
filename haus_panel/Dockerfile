@@ -1,7 +1,7 @@
 # Offizielles Base-Image (s6-overlay v3, bashio, tzdata).
 FROM ghcr.io/home-assistant/base-python:3.13-alpine3.24-2026.08.0
 
-ARG BUILD_VERSION=1.1.1
+ARG BUILD_VERSION=1.1.2
 ARG BUILD_ARCH=amd64
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
