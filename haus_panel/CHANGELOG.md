@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.4.2 – 2026-10-11
+
+- Klima: Im Abschnitt „Luft“ stehen Feinstaub- und CO₂-Werte jetzt immer, auch wenn sie sehr gut sind
+  (z. B. Luftreiniger mit 0 µg/m³). Bisher verdrängten die Luftfeuchtewerte sie von den sechs Plätzen.
+  Die Luftfeuchte füllt die übrigen Plätze.
+
 ## 1.4.1 – 2026-10-06
 
 - UniFi: verständliche Meldung, wenn ein Ubiquiti-Cloud-Konto mit Zwei-Faktor statt eines lokalen Benutzers

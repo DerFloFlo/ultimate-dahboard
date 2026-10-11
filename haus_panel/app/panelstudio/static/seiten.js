@@ -68,7 +68,12 @@
       .filter((e) => { const b = PS.bereichVon(e); return b && !/balkon|garten|terrasse|aussen|außen/i.test(b + " " + PS.bereichName(b)); })
       .sort(nameSort)
       .forEach((e) => { const k = PS.bereichVon(e) + "|" + PS.a(e).device_class; if (!jeRaum.has(k)) jeRaum.set(k, e); });
-    const innenLuft = [...jeRaum.values()].sort((x, y) => num(y) / grenze[PS.a(y).device_class] - num(x) / grenze[PS.a(x).device_class]).slice(0, aussenF ? 5 : 6);
+    // Luftqualität (CO₂, Feinstaub) immer zeigen, auch bei sehr guten Werten nahe 0; Luftfeuchte füllt die übrigen Plätze
+    const anteil = (x, y) => num(y) / grenze[PS.a(y).device_class] - num(x) / grenze[PS.a(x).device_class];
+    const istFeuchte = (e) => PS.a(e).device_class === "humidity";
+    const qualitaet = [...jeRaum.values()].filter((e) => !istFeuchte(e)).sort(anteil);
+    const feuchte = [...jeRaum.values()].filter(istFeuchte).sort(anteil);
+    const innenLuft = [...qualitaet, ...feuchte.slice(0, Math.max(0, (aussenF ? 5 : 6) - qualitaet.length))];
     const b4 = box("Luft");
     if (aussenF) b4.appendChild(balken("Außen", PS.text(aussenF), num(aussenF) / 100, "var(--info)", aussenF));
     innenLuft.forEach((e) => {
