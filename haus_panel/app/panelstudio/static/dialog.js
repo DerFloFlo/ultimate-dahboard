@@ -311,7 +311,7 @@
     const lo = a.min_temp ?? 5, hi = a.max_temp ?? 30, schritt = a.target_temp_step || 0.5;
     const anteil = ist != null ? (ist - lo) / (hi - lo) : null;
     const heizt = a.hvac_action === "heating";
-    el.innerHTML = `<div class="titel">${PS.icon(eid)}<span>${PS.esc(PS.kurzname(eid).replace(/^PM\s+/, ""))}</span><small>${PS.esc(a.hvac_action === "heating" ? "heizt" : a.hvac_action === "idle" ? "bereit" : PS.text(eid, st.s))}${a.preset_mode ? " · " + PS.esc(a.preset_mode) : ""}</small></div>
+    el.innerHTML = `<div class="titel">${PS.icon(eid)}<span>${PS.esc(PS.kurzname(eid).replace(/^PM\s+/, ""))}</span><small>${PS.esc(a.hvac_action === "heating" ? "heizt" : a.hvac_action === "idle" ? "bereit" : PS.text(eid, st.s))}${a.preset_mode ? " · " + PS.esc(a.preset_mode) : ""}</small>${PS.klimaAbzeichen(eid)}</div>
       <div class="thermo"><div class="ring ${heizt ? "" : "kalt"}">${PS.ringSVG(anteil)}<div class="innen"><b class="tabular">${ist != null ? PS.zahl(ist, 1) + "°" : "–"}</b><small>${a.current_humidity != null ? PS.zahl(a.current_humidity, 0) + " % rF" : "Ist"}</small></div></div>
       <div class="spalte-r"><div class="soll"></div><div class="modi reihe"></div></div></div>`;
     let wunsch = soll, timer = null;

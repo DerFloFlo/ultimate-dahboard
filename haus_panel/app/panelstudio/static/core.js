@@ -386,6 +386,31 @@
     return { raum, sichtbar: lichter.filter((e) => e !== raum && !versteckt.has(e)) };
   };
 
+  // Kennzahl-Felder und Status-Abzeichen im Stil von PM Klima Studio (© 2026 PM Networks, MIT-Lizenz)
+  // Bewertung je Messgröße: ok/warn/bad mit kurzem Urteil (Grenzen wie in der Luftqualität der Raumansicht)
+  const BEWERTUNG = {
+    pm25: [[15, "ok", "gut"], [25, "warn", "mäßig"], [1 / 0, "bad", "schlecht"]],
+    pm10: [[45, "ok", "gut"], [50, "warn", "mäßig"], [1 / 0, "bad", "schlecht"]],
+    carbon_dioxide: [[1000, "ok", "gut"], [1400, "warn", "mäßig"], [1 / 0, "bad", "lüften"]],
+    humidity: [[30, "bad", "zu trocken"], [40, "warn", "trocken"], [60, "ok", "ideal"], [70, "warn", "feucht"], [1 / 0, "bad", "Schimmelrisiko"]],
+  };
+  PS.bewertung = (art, v) => {
+    const g = BEWERTUNG[art]; if (!g || v == null || !isFinite(v)) return { klasse: "", txt: "" };
+    const [, klasse, txt] = g.find(([bis]) => Number(v) < bis); return { klasse, txt };
+  };
+  // „1.171 ppm“ → Zahl groß, Einheit klein (wie „Soll 25 °C“ in Klima Studio)
+  const einheitKlein = (val) => { const m = /^([−\-+]?[\d.,]+)\s+(.+)$/.exec(String(val)); return m ? `${PS.esc(m[1])}<small>${PS.esc(m[2])}</small>` : PS.esc(val); };
+  PS.kennzahlHTML = ({ lbl, val, sub = "", klasse = "", eid = "" }) =>
+    `<div class="kennzahl ${klasse}"${eid ? ` data-eid="${PS.esc(eid)}"` : ""}><span class="lbl">${PS.esc(lbl)}</span><span class="val tabular">${einheitKlein(val)}</span>${sub ? `<span class="sub">${PS.esc(sub)}</span>` : ""}</div>`;
+  // Abzeichen „● Auto“ für Thermostate: heizt / Auto / Heizen / Aus
+  PS.klimaAbzeichen = (eid) => {
+    const st = PS.z[eid]; if (!st) return "";
+    const a = st.a || {}, s = st.s;
+    const [klasse, txt] = a.hvac_action === "heating" ? ["heizt", "Heizt"] : s === "off" ? ["aus", "Aus"] : s === "auto" ? ["auto", "Auto"]
+      : s === "heat" ? ["heat", a.preset_mode ? String(a.preset_mode).charAt(0).toUpperCase() + String(a.preset_mode).slice(1) : "Heizen"] : ["auto", PS.text(eid, s)];
+    return `<span class="abzeichen ${klasse}">${PS.esc(txt)}</span>`;
+  };
+
   // Kachel für eine Entität (überall gleich aufgebaut, damit Aktualisierungen nur Klassen und Texte ändern)
   PS.kachelHTML = (eid, opts = {}) =>
     `<button class="kachel" data-eid="${PS.esc(eid)}"${opts.bereich ? ` data-bereich="${PS.esc(opts.bereich)}"` : ""}${opts.titel ? ` data-titel="${PS.esc(opts.titel)}"` : ""} style="--i:${opts.i || 0}">${PS.icon(eid)}<b></b><small></small><span class="balken"></span></button>`;

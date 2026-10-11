@@ -74,13 +74,18 @@
     const qualitaet = [...jeRaum.values()].filter((e) => !istFeuchte(e)).sort(anteil);
     const feuchte = [...jeRaum.values()].filter(istFeuchte).sort(anteil);
     const innenLuft = [...qualitaet, ...feuchte.slice(0, Math.max(0, (aussenF ? 5 : 6) - qualitaet.length))];
+    // Kennzahl-Felder wie in PM Klima Studio: Raum und Messgröße, großer Wert, Urteil darunter
     const b4 = box("Luft");
-    if (aussenF) b4.appendChild(balken("Außen", PS.text(aussenF), num(aussenF) / 100, "var(--info)", aussenF));
+    const felder = [];
+    if (aussenF) felder.push(PS.kennzahlHTML({ lbl: "Außen · Feuchte", val: PS.text(aussenF), sub: "Außenluft", eid: aussenF }));
     innenLuft.forEach((e) => {
-      const dc = PS.a(e).device_class, a = num(e) / grenze[dc];
-      const was = { carbon_dioxide: " · CO₂", pm25: " · Feinstaub", humidity: "" }[dc];
-      b4.appendChild(balken(`${PS.bereichName(PS.bereichVon(e))}${was}`, PS.text(e), a, a > 0.7 ? "var(--warn)" : "var(--gut)", e));
+      const dc = PS.a(e).device_class, bw = PS.bewertung(dc, num(e));
+      const was = { carbon_dioxide: "CO₂", pm25: "Feinstaub", humidity: "Feuchte" }[dc];
+      felder.push(PS.kennzahlHTML({ lbl: `${PS.bereichName(PS.bereichVon(e))} · ${was}`, val: PS.text(e), sub: bw.txt, klasse: bw.klasse, eid: e }));
     });
+    const kz = E(`<div class="kennzahlen">${felder.join("")}</div>`);
+    kz.querySelectorAll("[data-eid]").forEach((f) => f.addEventListener("click", () => PS.mehrInfos(f.dataset.eid)));
+    b4.appendChild(kz);
     if (aussenF || innenLuft.length) r.appendChild(b4);
     const ger = alle().filter((e) => (dom("fan")(e) || dom("humidifier")(e)) && PS.sichtbar(e));
     if (ger.length) { const b5 = box("Geräte"); b5.appendChild(raster(ger.sort(nameSort))); r.appendChild(b5); }

@@ -493,3 +493,108 @@ body.ruhe .gruss.an{opacity:.6}
   .r-spalte{overflow:visible}
 }
 .wlan-zeile>span:first-child small{display:block;font-size:.85rem;color:var(--leise);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ==========================================================================================================
+   Klima-Studio-Stil: Gestaltung und Animationen übernommen aus „PM Klima Studio“
+   (https://github.com/D0GC/ha-pm-networks-apps, © 2026 PM Networks, MIT-Lizenz, siehe LICENSE-pm-klima-studio.txt).
+   Glas-Karten auf dem Twilight-Verlauf, Kapitälchen-Überschriften, Reiter als Pillen, Status-Abzeichen,
+   Kennzahl-Felder sowie die Übergänge (Leuchtrand, Lade-Kreisel). Die Bewegungen des Panels bleiben erhalten.
+   ========================================================================================================== */
+:root{
+  --m-auto:#B885D6;--m-heat:#E8875A;--m-off:#827E96;--m-heizt:#F2B35C;
+  --akzent:#B885D6;--gut:#7FC8A9;--warn:#F2B35C;--bad:#E8875A;
+  --glas:rgba(38,34,82,.58);--glas-stark:rgba(30,26,68,.86);--glas-tief:rgba(15,12,42,.35);
+  --linie:rgba(197,192,211,.14);--linie-stark:rgba(197,192,211,.28);--leise:rgba(236,235,242,.64);
+  --glas-schatten:0 10px 30px rgba(8,6,26,.35);--leuchtrand:0 0 0 2px rgba(184,133,214,.45);
+  --r-glas:1.45rem;
+}
+
+/* Modulfläche: Twilight-Verlauf statt flachem Dunkel, darauf Glas */
+.sheet{background:linear-gradient(135deg,#0F0C2A 0%,#262252 42%,#443171 74%,#784295 108%)}
+.sheet-kopf{background:rgba(15,12,42,.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:var(--r-gross) var(--r-gross) 0 0}
+.sheet-kopf::before{content:"";flex:none;width:3rem;height:3rem;background:url("img/icon.svg") center/contain no-repeat;opacity:.95}
+.sheet-kopf:has(.zurueck:not([hidden]))::before{display:none}
+.sheet-kopf h1{display:flex;flex-direction:column;line-height:1.15;font-weight:700;min-width:0}
+.sheet-kopf h1::before{content:"Haus Eichner";font-size:max(.36em,9px);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--m-auto)}
+
+/* Reiter wie die Navigation in Klima Studio: ruhig, die aktive Pille leuchtet violett */
+.tabs button{background:transparent;border-color:transparent;transition:background .2s,border-color .2s,color .2s}
+.tabs button.aktiv{background:rgba(184,133,214,.18);border-color:rgba(184,133,214,.45);color:var(--cloud)}
+
+/* Glas-Karten */
+.r-box,.gross,.raum,.karte,.zaehler-karte{background:var(--glas);border:1px solid var(--linie);border-radius:var(--r-glas);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:var(--glas-schatten);
+  transition:box-shadow .3s,border-color .3s,transform .2s var(--ease)}
+.karte{transition:opacity .9s ease,transform .9s var(--ease),box-shadow .3s,border-color .3s}
+.r-box .gross,.r-box .zaehler-karte{background:var(--glas-tief);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:1.1rem}
+.dialog{background:var(--glas-stark);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.toast{background:var(--glas-stark);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+
+/* Kapitälchen-Überschriften („kicker“) */
+.r-box h3,.gruppe>h3{letter-spacing:.2em;color:var(--m-auto)}
+
+/* Kacheln und Knöpfe als innere Felder auf dem Glas */
+.kachel{background:var(--glas-tief);border-color:var(--linie);transition:transform .22s var(--ease),background .4s,border-color .3s,box-shadow .3s,opacity .4s}
+.kachel.an{background:linear-gradient(150deg,rgba(120,66,149,.8),rgba(68,49,113,.62));border-color:rgba(184,133,214,.55)}
+.knopf{background:rgba(68,49,113,.6);border-color:var(--linie-stark);transition:background .3s,border-color .3s,box-shadow .3s,transform .15s}
+.knopf.aktiv,.knopf.primaer{background:var(--purple);border-color:var(--m-auto);box-shadow:0 0 0 1px var(--m-auto) inset}
+.chip{border:1px solid var(--linie-stark);background:rgba(38,34,82,.5)}
+.chip.an{background:var(--purple);border-color:var(--m-auto)}
+.chip.warn{border-color:rgba(242,179,92,.45)}
+
+/* Leuchtrand bei Berührung und Mauszeiger (Klima Studio: .ctl-card.focus) */
+.raum:active,.kachel:active,.kennzahl[data-eid]:active{border-color:var(--m-auto);box-shadow:var(--leuchtrand),var(--glas-schatten)}
+@media (hover:hover){
+  .raum:hover,.gross:hover,.r-box:hover{border-color:rgba(184,133,214,.45)}
+  .raum:hover{box-shadow:var(--leuchtrand),var(--glas-schatten)}
+  .kachel:hover,.kennzahl[data-eid]:hover{border-color:rgba(184,133,214,.45)}
+  .tabs button:not(.aktiv):hover{background:rgba(197,192,211,.08)}
+  .knopf:hover{border-color:var(--m-auto)}
+}
+
+/* Status-Abzeichen „● Auto“ */
+.abzeichen{display:inline-flex;align-items:center;gap:.45em;margin-left:auto;flex:none;padding:.2em .8em;border-radius:99px;border:1px solid currentColor;
+  font-size:max(.85rem,10.5px);font-weight:600;line-height:1.5;letter-spacing:0;text-transform:none;white-space:nowrap}
+.abzeichen::before{content:"";width:.6em;height:.6em;border-radius:50%;background:currentColor}
+.abzeichen.auto{color:var(--m-auto)}.abzeichen.heat{color:var(--m-heat)}.abzeichen.aus{color:var(--m-off)}.abzeichen.heizt{color:var(--m-heizt)}
+.abzeichen.heizt::before{animation:puls 1.6s ease-in-out infinite}
+.gross[data-klima] .titel small{display:none}
+
+/* Raumkarten wie in Klima Studio: Kopf mit Abzeichen, große Temperatur, Kennzahl-Felder */
+.raum{gap:.7rem;min-height:0}
+.raster:has(>.raum){grid-template-columns:repeat(auto-fill,minmax(min(21rem,100%),1fr))}
+.raum .oben{flex-wrap:wrap;row-gap:.5rem}
+.raum .oben b{flex:1 0 auto;max-width:100%;font-size:1.45rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.raum .temps{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-top:.2rem}
+.raum .temps .ist{font-size:2.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.raum .temps .soll{color:var(--leise);font-weight:600;font-size:1.1rem}
+.raum .chips:empty{display:none}
+
+/* Kennzahl-Felder (Klima Studio: .metric) */
+.kennzahlen{display:grid;grid-template-columns:repeat(auto-fit,minmax(6.8rem,1fr));gap:.6rem}
+.r-box .kennzahlen{grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))}
+.kennzahl{display:flex;flex-direction:column;gap:.1rem;min-width:0;padding:.7rem .85rem;border-radius:.9rem;background:var(--glas-tief);border:1px solid var(--linie);transition:border-color .3s,box-shadow .3s}
+.kennzahl[data-eid]{cursor:pointer}
+.kennzahl .lbl{font-size:max(.78rem,9px);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--leise);line-height:1.35;hyphens:auto;-webkit-hyphens:auto}
+.kennzahl .val{font-size:1.45rem;font-weight:600;line-height:1.25}
+.kennzahl .val small{font-size:.62em;font-weight:600;color:var(--leise);margin-left:.3em}
+.kennzahl .sub{font-size:max(.9rem,10px);color:var(--leise)}
+.kennzahl.ok .val{color:var(--gut)}.kennzahl.warn .val{color:var(--warn)}.kennzahl.bad .val{color:var(--bad)}
+.kennzahlen>*{animation:auftauchen .45s var(--ease-aus) both}
+.kennzahlen>:nth-child(2){animation-delay:40ms}.kennzahlen>:nth-child(3){animation-delay:80ms}.kennzahlen>:nth-child(4){animation-delay:120ms}
+.kennzahlen>:nth-child(5){animation-delay:160ms}.kennzahlen>:nth-child(n+6){animation-delay:200ms}
+.sheet-inhalt.still .kennzahlen>*{animation:none}
+
+/* Lade-Kreisel (Klima Studio: .spinner) */
+.laden{grid-auto-flow:row;align-content:center;gap:1.6rem}
+.laden::after{content:"";justify-self:center;width:1.6rem;height:1.6rem;border-radius:50%;border:2px solid rgba(197,192,211,.35);border-top-color:var(--m-auto);animation:ks-spin 1s linear infinite}
+.kreisel{display:inline-block;width:1em;height:1em;border-radius:50%;border:2px solid rgba(197,192,211,.35);border-top-color:var(--m-auto);animation:ks-spin 1s linear infinite;vertical-align:-.15em}
+@keyframes ks-spin{to{transform:rotate(360deg)}}
+
+@media (max-width:600px){
+  .sheet-kopf::before{width:2.6rem;height:2.6rem}
+  .raum .temps .ist{font-size:2.6rem}
+  .kennzahlen{grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
+  .r-thermos{grid-template-columns:minmax(0,1fr)}
+}
+.gross .titel{flex-wrap:wrap;row-gap:.4rem}

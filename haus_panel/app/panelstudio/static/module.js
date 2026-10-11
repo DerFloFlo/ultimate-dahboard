@@ -204,16 +204,27 @@
   function raumKarte(b, i) {
     const w = PS.raumWerte(b.id);
     const chips = [];
-    if (w.lichterAn) chips.push(`<span class="chip an">${PS.ic("lightbulb")}${w.lichterAn}</span>`);
     const offen = w.ent.filter((e) => e.startsWith("binary_sensor.") && PS.s(e) === "on" && ["door", "window", "opening"].includes(PS.a(e).device_class));
     if (offen.length) chips.push(`<span class="chip warn">${PS.ic("window-open-variant")}${offen.length} offen</span>`);
     const bew = w.ent.find((e) => e.startsWith("binary_sensor.") && PS.s(e) === "on" && ["motion", "occupancy", "presence"].includes(PS.a(e).device_class));
     if (bew) chips.push(`<span class="chip">${PS.ic("motion-sensor")}Bewegung</span>`);
     const medien = w.ent.find((e) => e.startsWith("media_player.") && PS.s(e) === "playing");
     if (medien) chips.push(`<span class="chip an">${PS.ic("play")}${PS.esc(PS.kurzname(medien, b.name))}</span>`);
-    if (w.klima && PS.a(w.klima).hvac_action === "heating") chips.push(`<span class="chip warn">${PS.ic("fire")}heizt</span>`);
-    const k = E(`<div class="raum" style="--i:${i}"><div class="oben">${PS.ic(b.icon || "texture-box")}<b>${PS.esc(b.name)}</b></div>
-      <div class="werte">${w.temp != null ? `<span>${PS.ic("thermometer")} ${PS.zahl(w.temp, 1)}°</span>` : ""}${w.feuchte != null ? `<span>${PS.ic("water-percent")} ${PS.zahl(w.feuchte, 0)} %</span>` : ""}</div>
+    // Aufbau wie die Raumkarten in PM Klima Studio: Kopf mit Abzeichen, große Temperatur mit Soll, Kennzahl-Felder
+    const ka = w.klima ? PS.a(w.klima) : {};
+    const soll = w.klima && PS.s(w.klima) !== "off" && ka.temperature != null ? `<span class="soll">Soll ${PS.zahl(ka.temperature, 1)} °C</span>` : "";
+    const messung = (dc) => w.ent.find((e) => e.startsWith("sensor.") && PS.a(e).device_class === dc && !PS.nichtDa(e) && isFinite(Number(PS.s(e))));
+    const felder = [];
+    if (w.feuchte != null) { const f = Number(w.feuchte), bw = PS.bewertung("humidity", f); felder.push(PS.kennzahlHTML({ lbl: "Feuchte", val: `${PS.zahl(f, 0)} %`, sub: bw.txt, klasse: bw.klasse })); }
+    [["carbon_dioxide", "CO₂", 0], ["pm25", "Feinstaub", 0]].forEach(([dc, lbl, st]) => {
+      const e = messung(dc); if (!e) return;
+      const v = Number(PS.s(e)), bw = PS.bewertung(dc, v);
+      felder.push(PS.kennzahlHTML({ lbl, val: `${PS.zahl(v, st)} ${PS.a(e).unit_of_measurement || ""}`.trim(), sub: bw.txt, klasse: bw.klasse }));
+    });
+    if (w.lichter) felder.push(PS.kennzahlHTML({ lbl: "Licht", val: w.lichterAn ? `${w.lichterAn} an` : "aus", sub: `${w.lichter} ${w.lichter === 1 ? "Lampe" : "Lampen"}` }));
+    const k = E(`<div class="raum" style="--i:${i}"><div class="oben">${PS.ic(b.icon || "texture-box")}<b>${PS.esc(b.name)}</b>${w.klima ? PS.klimaAbzeichen(w.klima) : ""}</div>
+      ${w.temp != null ? `<div class="temps"><span class="ist tabular">${PS.zahl(w.temp, 1)} °C</span>${soll}</div>` : ""}
+      ${felder.length ? `<div class="kennzahlen">${felder.join("")}</div>` : ""}
       <div class="chips">${chips.join("")}</div></div>`);
     k.addEventListener("click", () => PS.unterseite(b.name, (el) => raumKompakt(el, b.id)));
     return k;

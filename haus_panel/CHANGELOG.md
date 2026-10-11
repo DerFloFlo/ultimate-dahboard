@@ -1,5 +1,19 @@
 # Änderungen
 
+## 1.5.0 – 2026-10-11
+
+- Neues Design im Stil von PM Klima Studio (D0GC/ha-pm-networks-apps, MIT-Lizenz, Hinweis in
+  `static/LICENSE-pm-klima-studio.txt`):
+  - Modulseiten auf dem Twilight-Verlauf mit Glas-Karten (Unschärfe, weicher Schatten, feine Ränder).
+  - Kopfzeile mit Symbol und Kapitälchen „HAUS EICHNER“ über dem Seitentitel, Reiter als ruhige Pillen,
+    die aktive leuchtet violett.
+  - Räume: Karten mit Status-Abzeichen („● Heizt“, „● Auto“ …), großer Temperatur mit Soll und Kennzahl-Feldern
+    für Feuchte, CO₂, Feinstaub und Licht, farbig bewertet (gut/mäßig/schlecht).
+  - Klima: Abschnitt „Luft“ mit Kennzahl-Feldern statt Balken; Thermostate mit Status-Abzeichen.
+  - Animationen: Leuchtrand bei Berührung, Übergänge für Ränder und Schatten, Lade-Kreisel, gestaffeltes
+    Einblenden der Kennzahl-Felder. Die bisherigen Bewegungen bleiben.
+- Handy: Thermostat-Karten auf der Klima-Seite stehen untereinander und laufen nicht mehr über den Rand.
+
 ## 1.4.3 – 2026-10-11
 
 - Luftreiniger und Luftbefeuchter: Die Kachel zeigt unter dem Namen die Messwerte des eigenen Geräts, z. B.
