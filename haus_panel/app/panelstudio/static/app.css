@@ -93,6 +93,7 @@ button{font:inherit;color:inherit}
 .kachel>.mdi{font-size:2.5rem;color:var(--lavender);transition:color .4s,transform .4s var(--ease)}
 .kachel b{font-size:1.2rem;font-weight:600;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .kachel small{font-size:1rem;color:var(--leise);margin-top:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kachel.mit-werten small{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .kachel.an{background:linear-gradient(150deg,rgba(120,66,149,.75),rgba(68,49,113,.6));border-color:var(--linie-stark)}
 .kachel.an>.mdi{color:#ffe8b0}
 .kachel.an small{color:var(--cloud)}

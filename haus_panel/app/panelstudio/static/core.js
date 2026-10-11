@@ -389,11 +389,32 @@
   // Kachel für eine Entität (überall gleich aufgebaut, damit Aktualisierungen nur Klassen und Texte ändern)
   PS.kachelHTML = (eid, opts = {}) =>
     `<button class="kachel" data-eid="${PS.esc(eid)}"${opts.bereich ? ` data-bereich="${PS.esc(opts.bereich)}"` : ""}${opts.titel ? ` data-titel="${PS.esc(opts.titel)}"` : ""} style="--i:${opts.i || 0}">${PS.icon(eid)}<b></b><small></small><span class="balken"></span></button>`;
+  // Luftreiniger und Luftbefeuchter: Messwerte des eigenen Geräts (Feinstaub, CO₂, Luftfeuchte …, Filter) in der Kachel
+  const MESS_ARTEN = ["pm25", "pm10", "carbon_dioxide", "aqi", "volatile_organic_compounds", "humidity"];
+  const PRESETS = { auto: "Auto", night: "Nacht", sleep: "Schlaf", eco: "Eco", turbo: "Turbo", boost: "Boost", manual: "Manuell", silent: "Leise" };
+  PS.kachelMesswerte = (eid) => {
+    const d = PS.domain(eid);
+    if (d !== "fan" && d !== "humidifier") return [];
+    const dev = (PS.reg[eid] || {}).d; if (!dev) return [];
+    const nachbarn = Object.keys(PS.reg).filter((x) => x !== eid && x.startsWith("sensor.") && PS.reg[x].d === dev && PS.z[x] && !PS.nichtDa(x) && isFinite(Number(PS.s(x))));
+    const mess = MESS_ARTEN.map((dc) => nachbarn.find((x) => PS.a(x).device_class === dc)).filter(Boolean);
+    const filter = nachbarn.find((x) => /filter/i.test(x) && PS.a(x).unit_of_measurement === "%");
+    return filter ? [...mess, filter] : mess;
+  };
+  const kachelUnterzeile = (eid) => {
+    const mess = PS.kachelMesswerte(eid);
+    if (!mess.length) return PS.text(eid);
+    const st = PS.z[eid] || {}, p = (st.a || {}).preset_mode;
+    const zustand = st.s === "on" && p ? PRESETS[p] || p.charAt(0).toUpperCase() + p.slice(1) : PS.text(eid);
+    const KURZ = { pm25: "PM2,5 ", pm10: "PM10 ", carbon_dioxide: "CO₂ " };
+    return [zustand, ...mess.map((x) => (/filter/i.test(x) && !PS.a(x).device_class ? "Filter " : KURZ[PS.a(x).device_class] || "") + PS.text(x))].join(" · ");
+  };
   PS.kachelAktualisieren = (el, bereichName) => {
     const eid = el.dataset.eid, st = PS.z[eid], d = PS.domain(eid);
     const icon = el.querySelector(".mdi"); if (icon) icon.outerHTML = PS.icon(eid);
     el.querySelector("b").textContent = el.dataset.titel || PS.kurzname(eid, bereichName);
-    el.querySelector("small").textContent = PS.text(eid);
+    el.querySelector("small").textContent = kachelUnterzeile(eid);
+    el.classList.toggle("mit-werten", PS.kachelMesswerte(eid).length > 0);
     el.classList.toggle("an", PS.istAn(eid) && d !== "person");
     el.classList.toggle("weg", !st || PS.nichtDa(eid));
     const frei = PS.freigabe(eid);
@@ -429,7 +450,8 @@
   };
   PS.on("diff", (ids) => {
     document.querySelectorAll(".kachel[data-eid]").forEach((el) => {
-      if (ids.has(el.dataset.eid) || (PS.freigabe(el.dataset.eid) && ids.has(PS.freigabe(el.dataset.eid)))) PS.kachelAktualisieren(el, el.dataset.bereich || undefined);
+      const eid = el.dataset.eid;
+      if (ids.has(eid) || (PS.freigabe(eid) && ids.has(PS.freigabe(eid))) || PS.kachelMesswerte(eid).some((x) => ids.has(x))) PS.kachelAktualisieren(el, el.dataset.bereich || undefined);
     });
   });
 

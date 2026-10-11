@@ -416,6 +416,15 @@ def default_states(jetzt: datetime) -> list[dict[str, Any]]:
             unit_of_measurement="µg/m³",
         ),
         s(
+            "fan.wohnzimmer_luftreiniger",
+            "on",
+            "wohnzimmer",
+            friendly_name="Luftreiniger Wohnzimmer",
+            preset_mode="auto",
+            preset_modes=["auto", "night"],
+            percentage=None,
+        ),
+        s(
             "sensor.wohnzimmer_luftreiniger_wohnzimmer_allergen_index",
             "1",
             "wohnzimmer",
@@ -438,6 +447,8 @@ GERAETE = {
     "vacuum.roborock_s8": ("dev_robo", "Roborock S8"),
     "sensor.roborock_s8_status": ("dev_robo", "Roborock S8"),
     "sensor.wohnzimmer_luftreiniger_wohnzimmer_filterwechsel": ("dev_luft", "Luftreiniger Wohnzimmer"),
+    "sensor.wohnzimmer_luftreiniger_wohnzimmer_feinstaub_pm2_5": ("dev_luft", "Luftreiniger Wohnzimmer"),
+    "fan.wohnzimmer_luftreiniger": ("dev_luft", "Luftreiniger Wohnzimmer"),
 }
 REOLINK_CAM = "media-source://reolink/CAM|abc|0"
 REOLINK_SUB = "media-source://reolink/RES|abc|0|sub"

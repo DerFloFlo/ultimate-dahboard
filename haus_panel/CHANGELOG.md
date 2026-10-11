@@ -1,5 +1,11 @@
 # Änderungen
 
+## 1.4.3 – 2026-10-11
+
+- Luftreiniger und Luftbefeuchter: Die Kachel zeigt unter dem Namen die Messwerte des eigenen Geräts, z. B.
+  „Auto · PM2,5 0 µg/m³ · Filter 13 %“ (Feinstaub, CO₂, Luftfeuchte, Filterzustand, sofern vorhanden). Die
+  Zeile darf zweizeilig umbrechen und folgt den Sensoren live.
+
 ## 1.4.2 – 2026-10-11
 
 - Klima: Im Abschnitt „Luft“ stehen Feinstaub- und CO₂-Werte jetzt immer, auch wenn sie sehr gut sind
